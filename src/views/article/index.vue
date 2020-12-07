@@ -26,11 +26,7 @@
     <ImageCropper />
 
     <div class="article-text">类型</div>
-    <div class="tag-exist">
-        <el-badge v-for="item in TagExist" :key="item.name" :value="item.num" class="item">
-            <el-tag>{{item.name}}</el-tag>
-        </el-badge>
-    </div>
+    <TagExist />
 
   </div>
 </template>
@@ -38,23 +34,20 @@
 <script>
 // 引入用el-upload和vue-cropper封装的图片裁剪上传组件
 import ImageCropper from '@/components/ImageCropper/index'
-// 引入获取所有文章tag的api
-import { GetTag } from '@/api/tag'
+// 引入tag-exist组件，这个组件也可以用在别的地方，所以单独封装
+import TagExist from '@/components/TagExist/index'
+
 export default {
     components: {
-        ImageCropper
+        ImageCropper,
+        TagExist
     },
     data() {
         return {
             value: '', // mavon-editor的原内容
             render: '', // mavon-editor渲染后的内容
             title: '', // 文章的标题
-            TagExist: []
         }
-    },
-    mounted() {
-        // 从外部api拿到已存在的tag
-        GetTag().then(res => { this.TagExist = res })
     },
     methods: {
         // mavon-editor 点击保存按钮
@@ -97,12 +90,6 @@ export default {
     .function-area {
         margin-top: 10px;
         text-align: right;
-    }
-
-    .tag-exist {
-        .el-badge {
-            margin-right: 20px;
-        }
     }
 
 }
