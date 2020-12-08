@@ -99,7 +99,7 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'Article',
-        component: () => import('@/views/article/index'),
+        component: () => import('@/views/article/revise/index'),
         meta: { title: '文章编辑', icon: 'form' }
       }
     ]
@@ -112,8 +112,8 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'Comment',
-        component: () => import('@/views/comment/index'),
-        meta: { title: '评论管理', icon: 'form' }
+        component: () => import('@/views/article/manage/index'),
+        meta: { title: '文章管理', icon: 'form' }
       }
     ]
   },
