@@ -40,6 +40,17 @@
                 width="200"
             >
             </el-table-column>
+
+            <el-table-column
+                prop="operation"
+                label="操作"
+                width="80"
+            >
+                <template slot-scope="scope">
+                    <el-button @click="handleClick(scope.row)" type="text">查看</el-button>
+                </template>
+            </el-table-column>
+
             <!-- 怎么在这里加入按钮，点击查看封面图呢？或者直接以图片形式显示封面图 -->
             <!-- 然后用户旁边还要能显示头像 -->
         </el-table>
@@ -56,6 +67,11 @@ export default {
     },
     mounted() {
         GetArticles().then(res => {this.tableData = res})
+    },
+    methods: {
+        handleClick(value) {
+            console.log(value)
+        }
     },
 }
 </script>

@@ -22,3 +22,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function ArticleAuthor() {
+  return new Promise((resolve) => {
+    resolve(
+      ['demo']
+    )
+  })
+}
