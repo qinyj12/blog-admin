@@ -7,14 +7,14 @@ export function GetArticles(params) {
                 {
                     id: 0,
                     title: '第一篇文章',
-                    author: 'dog', 
+                    author: 0, 
                     time: '2020-12-08',
                     cover: 'cover1.jpg'
                 },
                 {
                     id: 1,
                     title: '第二篇文章',
-                    author: 'cat', 
+                    author: 1, 
                     time: '2020-12-09',
                     cover: 'cover2.jpg'
                 }

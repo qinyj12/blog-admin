@@ -58,19 +58,48 @@
     </div>
 </template>
 <script>
+// 引入get article的api
 import { GetArticles } from '@/api/article'
+// 引入ArticleAuthor 的ap
+import { ArticleAuthor } from '@/api/user'
 export default {
     data() {
         return {
-            tableData: []
+            // 这是el-table里的数据
+            tableData: [],
+            // 这是用来存储author的对象
+            AuthorData: []
         }
     },
-    mounted() {
-        GetArticles().then(res => {this.tableData = res})
+    async mounted() {
+        // 先把api临时定义的author信息获取了，并赋值
+        await this.GetAuthor()
+
+        GetArticles().then(res => {
+            // getarticle只能拿到author的id，要再拿到author的其他信息
+            
+            res.map(Articleitem => {
+                let _ = this.AuthorData.find(Authoritem => {
+                    return Authoritem.id == Articleitem.author
+                    
+                })
+                console.log(_)
+
+                // _就是查找到到的与article所对应的author id相等的author信息，下一步要做的就是拿到_以后，怎么组合到原来的数据（tableData）里去，可以用省略号的语法
+            })
+
+
+            this.tableData = res
+        })
     },
     methods: {
+        // 点击查看文章
         handleClick(value) {
             console.log(value)
+        },
+        // 获取文章作者
+        async GetAuthor() {
+            this.AuthorData = await ArticleAuthor()
         }
     },
 }
