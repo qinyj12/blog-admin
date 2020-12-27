@@ -20,13 +20,25 @@
             >
             </el-table-column>
             
-            <el-table-column
+            <!-- <el-table-column
                 prop="author"
                 label="作者"
                 width="150"
             >
+            </el-table-column> -->
+
+            <el-table-column
+                prop="image"
+                label="作者"
+                width="100"
+            >
+                <template slot-scope="scope">
+                    <!-- scope就是tableData -->
+                    <img :src="scope.row.author" min-width="40" height="40" />
+                    <!-- <span>123</span> -->
+                </template>
             </el-table-column>
-            
+
             <el-table-column
                 prop="time"
                 label="时间"
@@ -61,7 +73,7 @@
 // 引入get article的api
 import { GetArticles } from '@/api/article'
 // 引入ArticleAuthor 的ap
-import { ArticleAuthor } from '@/api/user'
+import { ArticleAuthor } from '@/api/author'
 export default {
     data() {
         return {
@@ -77,19 +89,17 @@ export default {
 
         GetArticles().then(res => {
             // getarticle只能拿到author的id，要再拿到author的其他信息
-            
-            res.map(Articleitem => {
-                let _ = this.AuthorData.find(Authoritem => {
-                    return Authoritem.id == Articleitem.author
-                    
+            let a = res.map(ArticleItem => {
+                // 拿到想要的author的信息（authorData），从中找到符合articleItem.author == authorItem.id的authorData
+                let _ = this.AuthorData.find(AuthorItem => {
+                    return AuthorItem.id == ArticleItem.author
                 })
-                console.log(_)
-
-                // _就是查找到到的与article所对应的author id相等的author信息，下一步要做的就是拿到_以后，怎么组合到原来的数据（tableData）里去，可以用省略号的语法
+                // 从authorItem中拿到author的头像，然后赋值给ArticleItem。ArticleItem组成了getArticle的res
+                ArticleItem.author = _.avatar
             })
-
-
+            // 把重新合成的res赋值给tableData
             this.tableData = res
+            console.log(this.tableData)
         })
     },
     methods: {
