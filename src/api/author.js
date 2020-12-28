@@ -10,12 +10,12 @@ export function ArticleAuthor() {
                 {
                     id: 1,
                     name: 'cat',
-                    avatar: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+                    avatar: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
                 },
                 {
                     id: 2,
                     name: 'nobody',
-                    avatar: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+                    avatar: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
                 },
             ]
         )

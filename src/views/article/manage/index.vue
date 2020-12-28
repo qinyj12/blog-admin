@@ -5,7 +5,7 @@
         <el-table
             :data="tableData"
             border
-            style="width: 100%"
+            class="article-table"
         >
             <el-table-column
                 prop="id"
@@ -19,23 +19,18 @@
                 label="标题"
             >
             </el-table-column>
-            
-            <!-- <el-table-column
-                prop="author"
-                label="作者"
-                width="150"
-            >
-            </el-table-column> -->
 
             <el-table-column
-                prop="image"
                 label="作者"
                 width="100"
             >
                 <template slot-scope="scope">
-                    <!-- scope就是tableData -->
-                    <img :src="scope.row.author" min-width="40" height="40" />
-                    <!-- <span>123</span> -->
+                    <div class="table-author">
+                        <!-- scope就是tableData -->
+                        <img :src="scope.row.avatar" class="table-author-img"/>
+                        <span class="table-author-name">{{scope.row.author}}</span>
+                        <!-- <span>123</span> -->
+                    </div>
                 </template>
             </el-table-column>
 
@@ -51,6 +46,11 @@
                 label="封面图"
                 width="200"
             >
+                <template slot-scope="scope">
+                    <div class="table-cover">
+                        <img :src="scope.row.cover" class="table-cover-img" />
+                    </div>
+                </template>
             </el-table-column>
 
             <el-table-column
@@ -63,8 +63,6 @@
                 </template>
             </el-table-column>
 
-            <!-- 怎么在这里加入按钮，点击查看封面图呢？或者直接以图片形式显示封面图 -->
-            <!-- 然后用户旁边还要能显示头像 -->
         </el-table>
 
     </div>
@@ -89,17 +87,17 @@ export default {
 
         GetArticles().then(res => {
             // getarticle只能拿到author的id，要再拿到author的其他信息
-            let a = res.map(ArticleItem => {
+            res.map(ArticleItem => {
                 // 拿到想要的author的信息（authorData），从中找到符合articleItem.author == authorItem.id的authorData
                 let _ = this.AuthorData.find(AuthorItem => {
                     return AuthorItem.id == ArticleItem.author
                 })
                 // 从authorItem中拿到author的头像，然后赋值给ArticleItem。ArticleItem组成了getArticle的res
-                ArticleItem.author = _.avatar
+                ArticleItem.avatar = _.avatar
+                ArticleItem.author = _.name
             })
             // 把重新合成的res赋值给tableData
             this.tableData = res
-            console.log(this.tableData)
         })
     },
     methods: {
@@ -126,6 +124,33 @@ export default {
     .article-manage-text {
         font-size: 30px;
         line-height: 46px;
+    }
+
+    .article-table {
+        width: 100%;
+
+        .table-author {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            .table-author-img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+            }
+            .table-author-name {
+                margin: 0;
+            }
+        }
+        .table-cover {
+            display: flex;
+            justify-content: center;
+            .table-cover-img {
+                width: 95%;
+                margin: 0;
+            }
+        }
     }
 }
 </style>

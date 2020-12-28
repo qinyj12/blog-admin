@@ -82,9 +82,9 @@ export default {
             value: '', // mavon-editor的原内容
             render: '', // mavon-editor渲染后的内容
             title: '', // 文章的标题
-            inputVisible: false,
-            inputValue: '',
-            TagAdded: ''
+            inputVisible: false, // 文章标签
+            inputValue: '', // 文章标签
+            TagAdded: '' // 文章标签
         }
     },
     methods: {

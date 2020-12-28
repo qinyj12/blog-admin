@@ -91,27 +91,28 @@ export const constantRoutes = [
     ]
   },
 
-  // 添加article页
+  // 文章编辑页
   {
     path: '/article',
     component: Layout,
     children: [
       {
-        path: 'index',
+        // 这里用articleId来判断正在被修改的是哪一篇文章
+        path: ':ArticleId',
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
         meta: { title: '文章编辑', icon: 'form' }
       }
     ]
   },
-  // 添加comment页
+  // 文章管理页
   {
-    path: '/comment',
+    path: '/articles',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Comment',
+        name: 'Articles',
         component: () => import('@/views/article/manage/index'),
         meta: { title: '文章管理', icon: 'form' }
       }
