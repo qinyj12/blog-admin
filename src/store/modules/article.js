@@ -1,16 +1,15 @@
 // 正在通过“文章编辑”界面修改的文章。
 const state = {
-    // 如果选择新建文章，那这个值就是空的。如果是修改文章，那就把现有文章传进来
-    // 这个值包含文章标题、正文、封面、标签、作者
+    // 每次加载文章编辑模块时，都会读取动态路由然后从api获取文章详情，所以不用store仓库传值
+    // 但有一个例外情况，文章编辑模块读取到文章cover后，要传值给另一个模块imgcropper，这里要用store仓库传值
     ArticleRevising: {
-        content: '',
-        title: ''
-    }
+        ArticleCover: '',
+    },
 }
 
 const mutations = {
     // 把要修改的文章传进来
-    Revise_ARTICLE: (state, ArticleDetails) => {
+    REVISE_ARTICLE: (state, ArticleDetails) => {
         state.ArticleRevising = ArticleDetails
     }
 }
@@ -18,7 +17,7 @@ const mutations = {
 const actions = {
     // 封装成action
     ReviseArticle({ commit }, data) {
-        commit('Revise_ARTICLE', data)
+        commit('REVISE_ARTICLE', data)
     }
 }
 

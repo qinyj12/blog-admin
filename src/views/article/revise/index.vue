@@ -71,6 +71,10 @@ import ImageCropper from '@/components/ImageCropper/index'
 import TagExist from '@/components/TagExist/index'
 // 引入store
 import store from '@/store'
+// 引入GetContent api，获取正文
+import { GetContent } from '@/api/article'
+// 引入GetArticles api，获取文章标题、封面等
+import { GetArticles } from '@/api/article'
 
 export default {
     components: {
@@ -84,7 +88,8 @@ export default {
             title: '', // 文章的标题
             inputVisible: false, // 文章标签
             inputValue: '', // 文章标签
-            TagAdded: '' // 文章标签
+            TagAdded: '', // 文章标签
+            currentArticleDetail:{} // 当前要编辑的文章详情（标题、正文、tag、cover）
         }
     },
     methods: {
@@ -122,18 +127,49 @@ export default {
             }
             this.inputVisible = false;
             this.inputValue = '';
+        },
+
+        // 获取当前编辑的文章的详情
+        async getCurrentAritlceDetail(articleId) {
+            // 当前需要编辑的文章的详情（标题、标签、cover），先给一个空对象
+
+            // 通过getcontent api，获取文章的正文，并赋值给currentArticleDetail
+            await GetContent(articleId).then(res => {
+                this.currentArticleDetail.content = res
+            })
+
+            // 通过getarticle api，获取文章的标题、标签、cover，并赋值给currentArticleDetail
+            await GetArticles().then(res => {
+                let TargetArticle = res.find(_ => {return _.id == articleId})
+                this.currentArticleDetail.title = TargetArticle.title
+                this.currentArticleDetail.tag = TargetArticle.tag
+                this.currentArticleDetail.cover = TargetArticle.cover
+            })
         }
     },
     computed: {
+        // tagChosenInStore == 保存在store仓库里的tag值
         TagChosenInStore() {
             return store.getters.TagsChoosen
         }
     },
     watch: {
+        // tagChosenInStore（保存在store仓库里的tag值）变化后，把值赋给本地参数tagAdded，因为不能直接监控store仓库
         TagChosenInStore() {
             this.TagAdded = store.getters.TagsChoosen
         }
     },
+    async mounted() {
+        await this.getCurrentAritlceDetail(this.$route.params.ArticleId)
+        this.value = this.currentArticleDetail.content
+        this.title = this.currentArticleDetail.title
+        this.TagAdded = this.currentArticleDetail.tag
+        
+        // 这里不太优雅，本意是要先要这个模块先commit，然后再从另一个模块拿store。dispatch可以异步
+        this.$store.dispatch('article/ReviseArticle', {ArticleCover:this.currentArticleDetail.cover})
+        
+    },
+
 }
 </script>
 

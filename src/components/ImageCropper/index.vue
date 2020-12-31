@@ -38,12 +38,14 @@
             </div>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" :loading="loading" @click="finish">确认</el-button>
+                <el-button type="primary" :loading="loading" @click="finish">确 认</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
+// 引入vuex
+import store from '@/store'
 export default {
     data() {
         return {
@@ -110,7 +112,15 @@ export default {
             console.log(formData)
             // 此处加入ajax，把formdata传到后端
         }
-    }
+    },
+
+    mounted() {
+        // 这里不太优雅
+        setTimeout(() => {
+            this.imageCut = store.getters.ArticleRevising.ArticleCover
+        }, 100);
+        
+    },
 }
 </script>
 <style>
