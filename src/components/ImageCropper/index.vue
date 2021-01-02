@@ -113,13 +113,17 @@ export default {
             // 此处加入ajax，把formdata传到后端
         }
     },
-
-    mounted() {
-        // 这里不太优雅
-        setTimeout(() => {
+    computed: {
+        // 监听vuex仓库里articleCover的值
+        ArticleCoverInStore() {
+            return store.getters.ArticleRevising.ArticleCover
+        }
+    },
+    watch: {
+        // 一旦vuex仓库里articlecover的值变化，前端也要发生变化，显示当前文章所选择的封面
+        ArticleCoverInStore() {
             this.imageCut = store.getters.ArticleRevising.ArticleCover
-        }, 100);
-        
+        }
     },
 }
 </script>

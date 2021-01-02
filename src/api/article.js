@@ -10,7 +10,8 @@ export function GetArticles(params) {
                     author: 0, 
                     time: '2020-12-08',
                     cover: require('@/assets/develop_images/cover1.jpg'),
-                    tag: 'first'
+                    tag: 'first',
+                    state: '已发布'
                 },
                 {
                     id: 1,
@@ -18,7 +19,8 @@ export function GetArticles(params) {
                     author: 1, 
                     time: '2020-12-09',
                     cover: require('@/assets/develop_images/cover2.jpg'),
-                    tag: 'second'
+                    tag: 'second',
+                    state: '草稿'
                 }
             ]
         )

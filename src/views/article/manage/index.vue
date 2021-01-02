@@ -22,7 +22,7 @@
 
             <el-table-column
                 label="作者"
-                width="100"
+                width="80"
             >
                 <template slot-scope="scope">
                     <div class="table-author">
@@ -54,12 +54,27 @@
             </el-table-column>
 
             <el-table-column
-                prop="operation"
-                label="操作"
+                label="状态"
                 width="80"
             >
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text">查看</el-button>
+                    <el-tag
+                        :type="scope.row.state == '已发布' ? 'success' : 'warning'"
+                        disable-transitions
+                    >
+                        {{scope.row.state}}
+                    </el-tag>
+                </template>
+
+            </el-table-column>
+
+            <el-table-column
+                prop="operation"
+                label="操作"
+                width="60"
+            >
+                <template slot-scope="scope">
+                    <el-button @click="ViewArticle(scope.row)" type="text">查看</el-button>
                 </template>
             </el-table-column>
 
@@ -101,9 +116,9 @@ export default {
         })
     },
     methods: {
-        // 点击查看文章
-        handleClick(value) {
-            console.log(value)
+        // 点击查看文章，把article id传值给编程式导航
+        ViewArticle(ArticleDetail) {
+            this.$router.push({name: 'Article', params: {ArticleId: ArticleDetail.id}})
         },
         // 获取文章作者
         async GetAuthor() {
@@ -124,6 +139,17 @@ export default {
     .article-manage-text {
         font-size: 30px;
         line-height: 46px;
+        margin: 50px 0 10px 0;
+        display: flex;
+        align-items: center;
+    }
+    .article-manage-text:before {
+        content: '';
+        display: inline-block;
+        box-sizing: border-box;
+        height: 30px;
+        border-left: 10px solid rgb(25, 221, 196);
+        margin-right: 10px;
     }
 
     .article-table {

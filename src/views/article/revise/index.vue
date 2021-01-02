@@ -131,20 +131,29 @@ export default {
 
         // 获取当前编辑的文章的详情
         async getCurrentAritlceDetail(articleId) {
-            // 当前需要编辑的文章的详情（标题、标签、cover），先给一个空对象
+            // 如果articleId不是数字
+            let _ = parseFloat(articleId).toString()
+            if (_ == 'NaN') {
+                if (articleId == 'new') {
+                    // 啥也不用管
+                } else {
+                    this.$router.push('/404')
+                }
+            // 如果articleId是数字
+            } else {
+                // 通过getcontent api，获取文章的正文，并赋值给currentArticleDetail
+                await GetContent(articleId).then(res => {
+                    this.currentArticleDetail.content = res
+                })
 
-            // 通过getcontent api，获取文章的正文，并赋值给currentArticleDetail
-            await GetContent(articleId).then(res => {
-                this.currentArticleDetail.content = res
-            })
-
-            // 通过getarticle api，获取文章的标题、标签、cover，并赋值给currentArticleDetail
-            await GetArticles().then(res => {
-                let TargetArticle = res.find(_ => {return _.id == articleId})
-                this.currentArticleDetail.title = TargetArticle.title
-                this.currentArticleDetail.tag = TargetArticle.tag
-                this.currentArticleDetail.cover = TargetArticle.cover
-            })
+                // 通过getarticle api，获取文章的标题、标签、cover，并赋值给currentArticleDetail
+                await GetArticles().then(res => {
+                    let TargetArticle = res.find(_ => {return _.id == articleId})
+                    this.currentArticleDetail.title = TargetArticle.title
+                    this.currentArticleDetail.tag = TargetArticle.tag
+                    this.currentArticleDetail.cover = TargetArticle.cover
+                })
+            }
         }
     },
     computed: {
@@ -160,14 +169,14 @@ export default {
         }
     },
     async mounted() {
+        // 获取当前要编辑的文章的详情，在函数内已经把详情赋值给currentArticleDetail了
         await this.getCurrentAritlceDetail(this.$route.params.ArticleId)
+        // 把文章的title、content、tag分别赋值给对应的变量
         this.value = this.currentArticleDetail.content
         this.title = this.currentArticleDetail.title
         this.TagAdded = this.currentArticleDetail.tag
-        
-        // 这里不太优雅，本意是要先要这个模块先commit，然后再从另一个模块拿store。dispatch可以异步
+        // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
         this.$store.dispatch('article/ReviseArticle', {ArticleCover:this.currentArticleDetail.cover})
-        
     },
 
 }

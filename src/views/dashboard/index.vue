@@ -2,16 +2,21 @@
   <div class="dashboard-container">
     <div class="dashboard-text">你好 {{ name }}</div>
     <div class="dashboard-text">头像修改</div>
+
+    <ImageCropper />
   </div>
 </template>
 
 <script>
-  import {
-    mapGetters
-  } from 'vuex'
+  import { mapGetters } from 'vuex'
+  // 引入imageCropper模块
+  import ImageCropper from '@/components/ImageCropper/index'
 
   export default {
     name: 'Dashboard',
+    components: {
+      ImageCropper
+    },
     computed: {
       ...mapGetters([
         'name'

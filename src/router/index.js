@@ -99,10 +99,19 @@ export const constantRoutes = [
       {
         // 这里用articleId来判断正在被修改的是哪一篇文章
         path: ':ArticleId',
+        hidden: true,
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
-        meta: { title: '文章编辑', icon: 'form' }
+        meta: { title: '新建文章', icon: 'form' }
+      },
+      {
+        // 这里用articleId来判断正在被修改的是哪一篇文章
+        path: 'new',
+        name: 'Article',
+        component: () => import('@/views/article/revise/index'),
+        meta: { title: '新建文章', icon: 'form' }
       }
+      // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
   },
   // 文章管理页
@@ -190,7 +199,6 @@ export const constantRoutes = [
       }
     ]
   },
-
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
