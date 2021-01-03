@@ -23,7 +23,7 @@
     />
 
     <div class="article-text">封面</div>
-    <ImageCropper />
+    <ImageCropper :CropWidth="'360px'" :CropHeight="'180px'" />
 
     <div class="article-text">标签</div>
     <TagExist />

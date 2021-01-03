@@ -10,9 +10,12 @@
             :on-change="changeUpload"
         >
             <img v-if="imageCut" :src="imageCut" class="image-cut"> <!--这个显示剪裁好以后的图片-->
-            <i class="el-icon-upload" />
-            <div class="el-upload__text">点击上传</div>
-            <div class="el-upload__tip">支持绝大多数图片格式，单张图片最大支持5MB</div>
+            <div class="el-upload-icon-text">
+                <i class="el-icon-upload" />
+                <div class="el-upload__text">点击上传</div>
+                <div class="el-upload__tip">支持绝大多数图片格式，单张图片最大支持5MB</div>
+            </div>
+
         </el-upload>
 
         <el-dialog title="图片剪裁" :visible.sync="dialogVisible" append-to-body>
@@ -58,8 +61,8 @@ export default {
                 outputType: 'jpeg', // 裁剪生成图片的格式
                 canScale: false, // 图片是否允许滚轮缩放
                 autoCrop: true, // 是否默认生成截图框
-                autoCropWidth: 360, // 默认生成截图框宽度
-                autoCropHeight: 180, // 默认生成截图框高度
+                autoCropWidth: this.CropWidth, // 默认生成截图框宽度
+                autoCropHeight: this.CropHeight, // 默认生成截图框高度
                 fixedBox: true, // 固定截图框大小 不允许改变
                 fixed: true, // 是否开启截图框宽高固定比例
                 fixedNumber: [7, 5], // 截图框的宽高比例
@@ -72,9 +75,11 @@ export default {
             picsList: [], // 页面显示的数组
             // 防止重复提交
             loading: false,
-            imageCut: '' // 已经剪裁好的图片
+            imageCut: '', // 已经剪裁好的图片
         }
     },
+    // 这是截图框的宽高，从父元素传值。
+    props:['CropWidth', 'CropHeight'],
     methods: {
         // 上传按钮   限制图片大小
         changeUpload(file, fileList) {
@@ -125,21 +130,36 @@ export default {
             this.imageCut = store.getters.ArticleRevising.ArticleCover
         }
     },
+    mounted() {
+        // console.log(this.CropWidth)
+        document.querySelector('.el-upload-dragger').style.setProperty('--CropWidth', this.CropWidth)
+        document.querySelector('.el-upload-dragger').style.setProperty('--CropHeight', this.CropHeight)
+    },
 }
 </script>
-<style>
+<style lang="scss">
+$CropWidth: var(--CropWidth);
+$CropHeight: var(--CropHeight);
+
 .el-upload-dragger {
-    width: 360px;
-    height: 180px;
+    width: $CropWidth;
+    height: $CropHeight;
 }
 
-.image-cut {
-    width: 360px;
-    height: 180px;
-}
-
+// 这是选择要剪切的图片后，跳出来的选择框里图片的大小
 .cropper {
     width: auto;
     height: 300px;
+}
+
+// 这是剪切完成后的图片
+.image-cut {
+    width: $CropWidth;
+    height: $CropHeight;
+}
+
+// 这是图标和文字
+.el-upload-icon-text {
+    padding: 0 15px;
 }
 </style>
