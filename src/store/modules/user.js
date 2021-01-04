@@ -47,7 +47,10 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
+        // response包含[code:20000, data:{avatar,introduction,name,roles}]
         const { data } = response
+
+        console.log(response)
 
         if (!data) {
           return reject('Verification failed, please Login again.')

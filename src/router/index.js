@@ -109,7 +109,7 @@ export const constantRoutes = [
         path: 'new',
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
-        meta: { title: '新建文章', icon: 'form' }
+        meta: { title: '新建文章', icon: 'el-icon-edit' }
       }
       // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
@@ -123,7 +123,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Articles',
         component: () => import('@/views/article/manage/index'),
-        meta: { title: '文章管理', icon: 'form' }
+        meta: { title: '文章管理', icon: 'el-icon-s-order' }
       }
     ]
   },

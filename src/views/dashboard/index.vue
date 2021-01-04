@@ -38,6 +38,8 @@
   // 引入imageCropper模块
   import ImageCropper from '@/components/ImageCropper/index'
 
+  import store from '@/store'
+
   export default {
     name: 'Dashboard',
     data() {
@@ -52,7 +54,8 @@
     },
     computed: {
       ...mapGetters([
-        'name'
+        'name', // 用vuex的mapgetters方法，拿到从getters.js中暴露出来的参数
+        'avatar',
       ])
     },
     methods: {
@@ -64,6 +67,15 @@
           this.TestResult = '不可用！'
         }, 1000);
       }
+    },
+    mounted() {
+      this.nickname = this.name
+
+      this.$store.dispatch('article/ReviseArticle', {ArticleCover: this.avatar})
+
+      setTimeout(() => {
+        // console.log(store.getters.ArticleRevising)
+      }, 100);
     },
   }
 

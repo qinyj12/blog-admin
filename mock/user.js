@@ -53,6 +53,7 @@ module.exports = [
     type: 'get',
     response: config => {
       const { token } = config.query
+      // user是本文件定义的{admin-token, editor-token}
       const info = users[token]
 
       // mock error
@@ -65,7 +66,8 @@ module.exports = [
 
       return {
         code: 20000,
-        data: info
+        data: info,
+        demo: typeof(config)
       }
     }
   },

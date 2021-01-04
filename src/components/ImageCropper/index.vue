@@ -127,7 +127,11 @@ export default {
     watch: {
         // 一旦vuex仓库里articlecover的值变化，前端也要发生变化，显示当前文章所选择的封面
         ArticleCoverInStore() {
+            console.log('cropper')
             this.imageCut = store.getters.ArticleRevising.ArticleCover
+            setTimeout(() => {
+                console.log(this.imageCut)
+            }, 100);
         }
     },
     mounted() {
