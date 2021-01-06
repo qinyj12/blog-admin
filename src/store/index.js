@@ -5,7 +5,7 @@ import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
 import tags from './modules/tags'
-import article from './modules/article'
+import cropper from './modules/cropper'
 
 Vue.use(Vuex)
 
@@ -15,7 +15,7 @@ const store = new Vuex.Store({
     settings,
     user,
     tags,
-    article
+    cropper
   },
   getters
 })

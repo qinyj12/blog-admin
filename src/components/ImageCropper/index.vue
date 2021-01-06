@@ -116,28 +116,29 @@ export default {
             formData.append('uploadFile', file)
             console.log(formData)
             // 此处加入ajax，把formdata传到后端
+        },
+        // 调整剪切框、剪切后的图片等元素的大小
+        CropperSize(size) {
+            document.querySelector('.el-upload-dragger').style.setProperty('--CropWidth', size.width)
+            document.querySelector('.el-upload-dragger').style.setProperty('--CropHeight', size.height)
         }
     },
     computed: {
-        // 监听vuex仓库里articleCover的值
-        ArticleCoverInStore() {
-            return store.getters.ArticleRevising.ArticleCover
+        // 监听vuex仓库里CroppedImage的值
+        CroppedImageInStore() {
+            return store.getters.CroppedImage
         }
     },
     watch: {
-        // 一旦vuex仓库里articlecover的值变化，前端也要发生变化，显示当前文章所选择的封面
-        ArticleCoverInStore() {
-            console.log('cropper')
-            this.imageCut = store.getters.ArticleRevising.ArticleCover
-            setTimeout(() => {
-                console.log(this.imageCut)
-            }, 100);
+        // 一旦vuex仓库里CroppedImage的值变化，前端也要发生变化，显示当前文章所选择的封面
+        CroppedImageInStore() {
+            console.log('检测到vuex仓库发生变化，前端cropper改变图片')
+            this.imageCut = store.getters.CroppedImage
         }
     },
     mounted() {
-        // console.log(this.CropWidth)
-        document.querySelector('.el-upload-dragger').style.setProperty('--CropWidth', this.CropWidth)
-        document.querySelector('.el-upload-dragger').style.setProperty('--CropHeight', this.CropHeight)
+        // 动态设置cropper的宽和高
+        this.CropperSize({width: this.CropWidth, height: this.CropHeight})
     },
 }
 </script>

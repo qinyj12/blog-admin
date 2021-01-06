@@ -22,3 +22,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function changeInfo(token) {
+  return request({
+    url: '/vue-admin-template/user/info',
+    method: 'post',
+    params: { token }
+  })
+}

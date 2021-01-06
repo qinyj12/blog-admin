@@ -6,6 +6,6 @@ const getters = {
   name: state => state.user.name,
   // 自己写的
   TagsChoosen: state => state.tags.TagsChoosen, // 选择的tags
-  ArticleRevising: state => state.article.ArticleRevising // 正在编辑器里被编辑的文章
+  CroppedImage: state => state.cropper.CroppedImage // 正在编辑器里被编辑的文章
 }
 export default getters

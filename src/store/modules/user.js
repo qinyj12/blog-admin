@@ -50,8 +50,6 @@ const actions = {
         // response包含[code:20000, data:{avatar,introduction,name,roles}]
         const { data } = response
 
-        console.log(response)
-
         if (!data) {
           return reject('Verification failed, please Login again.')
         }

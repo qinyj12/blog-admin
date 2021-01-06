@@ -176,7 +176,7 @@ export default {
         this.title = this.currentArticleDetail.title
         this.TagAdded = this.currentArticleDetail.tag
         // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
-        this.$store.dispatch('article/ReviseArticle', {ArticleCover:this.currentArticleDetail.cover})
+        this.$store.dispatch('cropper/CropImage', this.currentArticleDetail.cover)
     },
 
 }

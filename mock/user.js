@@ -66,8 +66,30 @@ module.exports = [
 
       return {
         code: 20000,
-        data: info,
-        demo: typeof(config)
+        data: info
+      }
+    }
+  },
+
+  // 修改用户信息
+  {
+    url: '/vue-admin-template/user/info\.*',
+    type: 'post',
+    response: config => {
+      const { token } = config.query
+      // user是本文件定义的{admin-token, editor-token}
+      const info = users[token]
+
+      if (!info) {
+        return {
+          code: 50008,
+          message: '修改失败，当前登录信息错误。'
+        }
+      }
+
+      return {
+        code: 20000,
+        data: '用户信息修改成功'
       }
     }
   },

@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">你好 {{ name }}</div>
-    <div class="dashboard-text">头像修改</div>
+    <div class="dashboard-text-small">头像修改</div>
 
     <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper :CropWidth="'200px'" :CropHeight="'200px'" />
+    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" />
 
-    <div class="dashboard-text">昵称修改</div>
+    <div class="dashboard-text-small">昵称修改</div>
     <el-input
       v-model="nickname"
       placeholder="请输入昵称"
@@ -14,7 +14,8 @@
       class="nickname-input"
     />
     <el-button 
-      type="primary" 
+      type="warning" 
+      plain
       class="nickname-button" 
       :loading="InputLoading"
       @click="TestNickname"
@@ -30,6 +31,11 @@
     >
       {{TestResult}}
     </span>
+
+    <div class="submit-button">
+      <el-button type="primary" @click="SaveInfo">保存更改</el-button>
+    </div>
+    
   </div>
 </template>
 
@@ -37,8 +43,10 @@
   import { mapGetters } from 'vuex'
   // 引入imageCropper模块
   import ImageCropper from '@/components/ImageCropper/index'
-
+  // 引入vuex仓库 
   import store from '@/store'
+  // 引入修改用户信息的接口 
+  import { changeInfo } from '@/api/user'
 
   export default {
     name: 'Dashboard',
@@ -66,15 +74,19 @@
           this.InputLoading = false
           this.TestResult = '不可用！'
         }, 1000);
+      },
+      // 保存用户信息
+      SaveInfo() {
+        changeInfo(store.getters.token).then(res => console.log(res))
       }
     },
     mounted() {
       this.nickname = this.name
 
-      this.$store.dispatch('article/ReviseArticle', {ArticleCover: this.avatar})
+      this.$store.dispatch('cropper/CropImage', this.avatar)
 
       setTimeout(() => {
-        // console.log(store.getters.ArticleRevising)
+        // console.log(store.getters.CroppedImage)
       }, 100);
     },
   }
@@ -91,7 +103,7 @@
     &-text {
       font-size: 30px;
       line-height: 46px;
-      margin: 50px 0 10px 0;
+      margin: 50px 0 50px 0;
       display: flex;
       align-items: center;
     }
@@ -104,6 +116,11 @@
       border-left: 10px solid rgb(25, 221, 196);
       margin-right: 10px;
     }
+  }
+
+  .dashboard-text-small {
+    font-size: 20px;
+    margin: 30px 0 10px 0;
   }
 
   // 昵称输入框
@@ -122,5 +139,10 @@
   }
   .test-result-fail {
     color: red
+  }
+
+  // 确认按钮
+  .submit-button {
+    margin: 30px 0;
   }
 </style>
