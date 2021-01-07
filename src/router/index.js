@@ -127,6 +127,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/users',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Users',
+        component: () => import('@/views/users/index'),
+        meta: { title: '用户管理', icon: 'el-icon-user-solid' }
+      }
+    ]
+  },
 
   {
     path: '/nested',
