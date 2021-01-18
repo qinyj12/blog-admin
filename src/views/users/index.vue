@@ -5,12 +5,17 @@
         <el-table :data="tableData" border class="users-table">
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column prop="nickName" label="昵称"></el-table-column>
-            <el-table-column prop="avatar" label="头像">
+            <el-table-column prop="avatar" label="头像" width="100">
                 <template slot-scope="scope">
-                    <img :src="scope.row.avatar" />
+                    <img :src="scope.row.avatar" class="user-avatar-img" />
                 </template>
             </el-table-column>
-            <el-table-column prop="jurisdiction" label="权限"></el-table-column>
+            <el-table-column prop="jurisdiction" label="权限">
+                <template slot-scope="scope">
+                    <i class="fas fa-user"></i>
+                    <span>{{scope.row.jurisdiction}}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="phone" label="手机号"></el-table-column>
             <el-table-column prop="addTime" label="加入日期"></el-table-column>
             <el-table-column prop="recentlyActive" label="最近活跃"></el-table-column>
@@ -63,6 +68,12 @@ export default {
       height: 30px;
       border-left: 10px solid rgb(25, 221, 196);
       margin-right: 10px;
+    }
+
+    .user-avatar-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
     }
 }
 </style>
