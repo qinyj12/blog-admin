@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '控制面板', icon: 'dashboard' }
+      meta: { title: '控制面板', icon: 'fas fa-tachometer-alt' }
     }]
   },
 
@@ -109,7 +109,7 @@ export const constantRoutes = [
         path: 'new',
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
-        meta: { title: '新建文章', icon: 'el-icon-edit' }
+        meta: { title: '新建文章', icon: 'fas fa-edit' }
       }
       // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
@@ -123,10 +123,35 @@ export const constantRoutes = [
         path: 'index',
         name: 'Articles',
         component: () => import('@/views/article/manage/index'),
-        meta: { title: '文章管理', icon: 'el-icon-s-order' }
+        meta: { title: '文章管理', icon: 'fas fa-clipboard-list' }
       }
     ]
   },
+
+  // 用户编辑页
+  {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        // 这里用userId来判断正在被修改的是哪一篇文章
+        path: ':UserId',
+        hidden: true,
+        name: 'User',
+        component: () => import('@/views/user/edit/index'),
+        meta: { title: '新建用户', icon: 'fas fa-user-edit' }
+      },
+      {
+        // 这里用userId来判断正在被修改的是哪一篇文章
+        path: 'new',
+        name: 'User',
+        component: () => import('@/views/user/edit/index'),
+        meta: { title: '新建用户', icon: 'fas fa-user-edit' }
+      }
+      // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
+    ]
+  },
+
   {
     path: '/users',
     component: Layout,
@@ -134,8 +159,8 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'Users',
-        component: () => import('@/views/users/index'),
-        meta: { title: '用户管理', icon: 'el-icon-user-solid' }
+        component: () => import('@/views/user/manage/index'),
+        meta: { title: '用户管理', icon: 'fas fa-users' }
       }
     ]
   },

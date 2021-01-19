@@ -19,6 +19,9 @@ export default {
     if (icon) {
       if (icon.includes('el-icon')) {
         vnodes.push(<i class={[icon, 'sub-el-icon']} />)
+      } else if (icon.includes('fas' || 'far' || 'fal' || 'fad')) {
+        // 此处改造，侧边栏添加awesome font图标，为了和element的icon对齐，统一改成18px
+        vnodes.push(<i class={[icon, 'sub-el-icon']} style="width:18px" />)
       } else {
         vnodes.push(<svg-icon icon-class={icon}/>)
       }
