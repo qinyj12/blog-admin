@@ -140,6 +140,10 @@ export default {
         // 动态设置cropper的宽和高
         this.CropperSize({width: this.CropWidth, height: this.CropHeight})
     },
+    // cropper组件销毁，vuex的状态清除，这样才能CroppedImageInStore函数才能每次都生效
+    destroyed() {
+        this.$store.dispatch('cropper/CropImage', '')
+    },
 }
 </script>
 <style lang="scss">

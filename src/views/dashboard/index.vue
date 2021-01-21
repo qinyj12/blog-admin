@@ -85,6 +85,7 @@
 
       this.$store.dispatch('cropper/CropImage', this.avatar)
 
+      // 检测有没有成功给vuex赋值
       setTimeout(() => {
         // console.log(store.getters.CroppedImage)
       }, 100);

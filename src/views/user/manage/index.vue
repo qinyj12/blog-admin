@@ -4,7 +4,7 @@
 
         <el-table :data="tableData" border class="users-table">
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column prop="nickName" label="昵称" width="150"></el-table-column>
+            <el-table-column prop="name" label="昵称" width="150"></el-table-column>
             <el-table-column prop="avatar" label="头像" width="100">
                 <template slot-scope="scope">
                     <img :src="scope.row.avatar" class="user-avatar-img" />
@@ -32,32 +32,50 @@
     </div>
 </template>
 <script>
+// 引入ArticleAuthor 的api
+import { ArticleAuthor } from '@/api/author'
 export default {
     data() {
         return {
             tableData: [
-                {
-                    id: '0', 
-                    nickName: 'dog', 
-                    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
-                    jurisdiction: 'admin',
-                    phone: '17611595223',
-                    addTime: '2021-01-20', 
-                    recentlyActive: '2021-01-20', 
-                    articleNum: '1'
-                },
-                {
-                    id: '1', 
-                    nickName: 'cat', 
-                    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
-                    jurisdiction: 'guest',
-                    phone: '13552501767',
-                    addTime: '2020-11-01', 
-                    recentlyActive: '2020-11-01', 
-                    articleNum: '2'
-                },
+                // {
+                //     id: '0', 
+                //     nickName: 'dog', 
+                //     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
+                //     jurisdiction: 'admin',
+                //     phone: '17611595223',
+                //     addTime: '2021-01-20', 
+                //     recentlyActive: '2021-01-20', 
+                //     articleNum: '1'
+                // },
+                // {
+                //     id: '1', 
+                //     nickName: 'cat', 
+                //     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
+                //     jurisdiction: 'guest',
+                //     phone: '13552501767',
+                //     addTime: '2020-11-01', 
+                //     recentlyActive: '2020-11-01', 
+                //     articleNum: '2'
+                // },
             ],
         }
+    },
+    methods: {
+        ViewUser(UserDetail) {
+            this.$router.push({name: 'User', params: {UserId: UserDetail.id}})
+        },
+        // 获取文章作者
+        async GetAuthor() {
+            this.tableData = await ArticleAuthor()
+            
+        }
+    },
+    async mounted() {
+        // 先把api临时定义的author信息获取了，并赋值
+        await this.GetAuthor()
+
+        console.log(this.tableData)
     },
     
 }

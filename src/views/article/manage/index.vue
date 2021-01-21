@@ -85,7 +85,7 @@
 <script>
 // 引入get article的api
 import { GetArticles } from '@/api/article'
-// 引入ArticleAuthor 的ap
+// 引入ArticleAuthor 的api
 import { ArticleAuthor } from '@/api/author'
 export default {
     data() {

@@ -99,17 +99,17 @@ export const constantRoutes = [
       {
         // 这里用articleId来判断正在被修改的是哪一篇文章
         path: ':ArticleId',
-        hidden: true,
+        hidden: true, // 平时隐藏起来
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
-        meta: { title: '新建文章', icon: 'form' }
+        meta: { title: '编辑文章', icon: 'fas fa-edit' }
       },
       {
         // 这里用articleId来判断正在被修改的是哪一篇文章
         path: 'new',
         name: 'Article',
         component: () => import('@/views/article/revise/index'),
-        meta: { title: '新建文章', icon: 'fas fa-edit' }
+        meta: { title: '编辑文章', icon: 'fas fa-edit' }
       }
       // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
@@ -136,17 +136,17 @@ export const constantRoutes = [
       {
         // 这里用userId来判断正在被修改的是哪一篇文章
         path: ':UserId',
-        hidden: true,
+        hidden: true, // 平时隐藏
         name: 'User',
         component: () => import('@/views/user/edit/index'),
-        meta: { title: '新建用户', icon: 'fas fa-user-edit' }
+        meta: { title: '编辑用户', icon: 'fas fa-user-edit' }
       },
       {
         // 这里用userId来判断正在被修改的是哪一篇文章
         path: 'new',
         name: 'User',
         component: () => import('@/views/user/edit/index'),
-        meta: { title: '新建用户', icon: 'fas fa-user-edit' }
+        meta: { title: '编辑用户', icon: 'fas fa-user-edit' }
       }
       // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
