@@ -13,7 +13,7 @@
             <el-table-column prop="jurisdiction" label="权限" width="150">
                 <template slot-scope="scope">
                     <div class="jurisdiction-box">
-                        <i :class="scope.row.jurisdiction == 'admin'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
+                        <i :class="scope.row.jurisdiction == '管理员'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
                         <span>{{scope.row.jurisdiction}}</span>
                     </div>
 
@@ -37,28 +37,7 @@ import { ArticleAuthor } from '@/api/author'
 export default {
     data() {
         return {
-            tableData: [
-                // {
-                //     id: '0', 
-                //     nickName: 'dog', 
-                //     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
-                //     jurisdiction: 'admin',
-                //     phone: '17611595223',
-                //     addTime: '2021-01-20', 
-                //     recentlyActive: '2021-01-20', 
-                //     articleNum: '1'
-                // },
-                // {
-                //     id: '1', 
-                //     nickName: 'cat', 
-                //     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80', 
-                //     jurisdiction: 'guest',
-                //     phone: '13552501767',
-                //     addTime: '2020-11-01', 
-                //     recentlyActive: '2020-11-01', 
-                //     articleNum: '2'
-                // },
-            ],
+            tableData: [],
         }
     },
     methods: {
@@ -74,8 +53,6 @@ export default {
     async mounted() {
         // 先把api临时定义的author信息获取了，并赋值
         await this.GetAuthor()
-
-        console.log(this.tableData)
     },
     
 }

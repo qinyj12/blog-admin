@@ -66,7 +66,7 @@
     </el-radio-group>
 
     <div class="submit-button">
-      <el-button type="primary" @click="SaveInfo">保存更改</el-button>
+      <el-button type="primary" @click="SaveInfo">{{this.$route.params.UserId=='new'?'新建用户':'保存更改'}}</el-button>
     </div>
     
 
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  // import { mapGetters } from 'vuex'
   // 引入imageCropper模块
   import ImageCropper from '@/components/ImageCropper/index'
   // 引入vuex仓库 
