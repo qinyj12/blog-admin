@@ -28,13 +28,23 @@ const mutations = {
 }
 
 const actions = {
-  // user login
+  // user login。调用store里的login函数
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
+      // trim()是掐头去尾删掉空格
+      // 从api/user调用login方法
       login({ username: username.trim(), password: password }).then(response => {
+        console.log('调用login方法，把账密传到后盾，尝试匹配')
+        console.log('成功匹配，拿到的response(包含token)是')
+        console.log(response)
         const { data } = response
+        console.log('读取response中的token，token为')
+        console.log(data.token)
+        console.log('调用set_token函数，把token保存到store.token')
+        // 对于token的格式，前端要求的应该是{code:20000, data: {toke:xxxx}}
         commit('SET_TOKEN', data.token)
+        console.log('调用setToken函数')
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -43,7 +53,7 @@ const actions = {
     })
   },
 
-  // get user info
+  // get user info，调用store里的getinfo函数
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
@@ -53,7 +63,7 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
+        // 返回值必须包含name和avatar，即{name:xxx, avatar:xxx}
         const { name, avatar } = data
 
         commit('SET_NAME', name)

@@ -46,6 +46,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
+    // 自定义了code，response = {code:20000, data:{token:admin-token}}
     if (res.code !== 20000) {
       Message({
         message: res.message || 'Error',

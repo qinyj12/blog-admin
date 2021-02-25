@@ -1,4 +1,4 @@
-
+// 这是定义登录用户的两种角色：admin-token, editor-token，似乎也只用于下文定义的本地api
 const tokens = {
   admin: {
     token: 'admin-token'
@@ -23,6 +23,7 @@ const users = {
   }
 }
 
+// 下面的方法不懂，但似乎是作为本地url把接口暴露出来，供前端在本地调用的，而不是去请求远程后端接口
 module.exports = [
   // user login
   {

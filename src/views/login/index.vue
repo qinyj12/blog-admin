@@ -41,7 +41,15 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <!-- 登录表单的login按钮 -->
+      <el-button 
+        :loading="loading" 
+        type="primary" 
+        style="width:100%;margin-bottom:30px;" 
+        @click.native.prevent="handleLogin"
+      >
+        Login
+      </el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
@@ -58,6 +66,7 @@ import { validUsername } from '@/utils/validate'
 export default {
   name: 'Login',
   data() {
+    // 登录表单的输入规则
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
@@ -65,6 +74,7 @@ export default {
         callback()
       }
     }
+    // 登录表单的输入规则
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -73,9 +83,10 @@ export default {
       }
     }
     return {
+      // 表单默认的值
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -105,9 +116,12 @@ export default {
         this.$refs.password.focus()
       })
     },
+    // 点击login按钮后触发的函数
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        // valid = true
         if (valid) {
+          // 激活loading转圈圈
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
