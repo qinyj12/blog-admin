@@ -3,7 +3,8 @@ import Cookies from 'js-cookie'
 const TokenKey = 'blog_backend_token' // 原来是'vue_admin_template_token'
 
 export function getToken() {
-  console.log('getToken函数调用中，尝试获取cookies')
+  console.log('getToken函数调用中，尝试获取cookies，cookies如下')
+  console.log(Cookies.get(TokenKey))
   return Cookies.get(TokenKey)
 }
 

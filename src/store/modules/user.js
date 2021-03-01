@@ -55,11 +55,15 @@ const actions = {
 
   // get user info，调用store里的getinfo函数
   getInfo({ commit, state }) {
+    console.log('store.user.getInfo正在调用中')
     return new Promise((resolve, reject) => {
+      console.log('开始调用api/user/getInfo，传入参数')
+      console.log(state.token)
+      // 调用getInfo函数，传入参数token给后端解密
       getInfo(state.token).then(response => {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!')
         // response包含[code:20000, data:{avatar,introduction,name,roles}]
         const { data } = response
-
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
@@ -92,6 +96,7 @@ const actions = {
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
+      console.log('调用resetToken()')
       removeToken() // must remove  token  first
       commit('RESET_STATE')
       resolve()

@@ -32,10 +32,12 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
+          console.log('try调用store.dispatch("user/getInfo")')
           await store.dispatch('user/getInfo')
 
           next()
         } catch (error) {
+          console.log('try调用store.dispatch("user/getInfo")，但出错')
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')

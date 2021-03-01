@@ -52,6 +52,7 @@ module.exports = [
   {
     url: '/vue-admin-template/user/info\.*',
     type: 'get',
+    // config应该是get方法传入的参数，如"xxx/vue-admin-template/user/info?token=admin-token"
     response: config => {
       const { token } = config.query
       // user是本文件定义的{admin-token, editor-token}
@@ -67,7 +68,7 @@ module.exports = [
 
       return {
         code: 20000,
-        data: info
+        data: info,
       }
     }
   },
