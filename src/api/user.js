@@ -19,6 +19,14 @@ export function getInfo(token) {
   })
 }
 
+export function testNickName(data) {
+  return request({
+    url: 'http://127.0.0.1:5000/test/',
+    method: 'get',
+    params: { data }
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',

@@ -19,7 +19,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      console.log('在utils/requests.js中调用getToken()函数')
+      console.log('request层面：在utils/requests.js中调用getToken()函数，在header中设置x-token')
       config.headers['X-Token'] = getToken()
     }
     return config
@@ -45,7 +45,8 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    console.log('request.js：response为')
+    console.log(response)
     // if the custom code is not 20000, it is judged as an error.
     // 自定义了code，response = {code:20000, data:{token:admin-token}}
     if (res.code !== 20000) {

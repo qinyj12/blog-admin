@@ -30,14 +30,16 @@ router.beforeEach(async(to, from, next) => {
       if (hasGetUserInfo) {
         next()
       } else {
+        console.log('路由层面：读取store.getters.name，如果为空')
         try {
           // get user info
-          console.log('try调用store.dispatch("user/getInfo")')
+          console.log('路由层面：try调用store.dispatch("user/getInfo")')
           await store.dispatch('user/getInfo')
 
           next()
         } catch (error) {
-          console.log('try调用store.dispatch("user/getInfo")，但出错')
+          console.log('路由层面：try调用store.dispatch("user/getInfo")，但出错')
+          console.log(error)
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
