@@ -19,11 +19,24 @@ export function getInfo(token) {
   })
 }
 
-export function testNickName(data) {
+// 这是检测用户名可用性的接口
+export function ifNameAvailable(name) {
   return request({
-    url: 'http://127.0.0.1:5000/test/',
+    url: 'http://127.0.0.1:5000/name/availability',
     method: 'get',
-    params: { data }
+    params: { name }
+  })
+}
+
+// 这是用户上传/修改用户名的接口
+export function upLoadAvatar(avatar) {
+  return request({
+    url: 'http://127.0.0.1:5000/avatar/',
+    method: 'post',
+    // headers: {'Content-Type': 'multipart/form-data'},
+    // data: avatar
+    // 似乎blob是个二进制文件，后端无法接收
+    data: Buffer.from(avatar)
   })
 }
 

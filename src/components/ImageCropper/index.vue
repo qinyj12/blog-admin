@@ -49,6 +49,8 @@
 <script>
 // 引入vuex
 import store from '@/store'
+// 引入上传头像的接口
+import { upLoadAvatar } from '@/api/user'
 export default {
     data() {
         return {
@@ -96,12 +98,14 @@ export default {
             this.$nextTick(() => {
                 this.option.img = url
                 this.dialogVisible = true
+                console.log('上传图片完成')
                 console.log(this.option.img)
             })
         },
         // 点击裁剪，这一步是可以拿到处理后的地址
         finish() {
             this.$refs.cropper.getCropBlob((data) => {
+                console.log('拿到裁剪后的图片')
                 console.log(data)
                 // var fileName = "goods" + this.fileinfo.uid
                 this.dialogVisible = false
@@ -112,10 +116,13 @@ export default {
         // 上传到服务器
         uploadHeadUrl_c(file) {
             const formData = new FormData()
-            formData.append('moduleName', 'headUrl')
-            formData.append('uploadFile', file)
-            console.log(formData)
+            formData.append('avatar', file)
+            // console.log(formData)
             // 此处加入ajax，把formdata传到后端
+            upLoadAvatar(formData).then(response => {console.log(response)})
+
+            // 释放内存
+            // window.URL.revokeObjectURL(file)
         },
         // 调整剪切框、剪切后的图片等元素的大小
         CropperSize(size) {

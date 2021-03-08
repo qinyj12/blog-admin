@@ -25,8 +25,8 @@
     <span 
       class="test-result" 
       :class="{
-        'test-result-success':TestResult=='可用！',
-        'test-result-fail':TestResult=='不可用！'
+        'test-result-success':TestResult == '可用',
+        'test-result-fail':TestResult != '可用'
       }"
     >
       {{TestResult}}
@@ -45,8 +45,8 @@
   import ImageCropper from '@/components/ImageCropper/index'
   // 引入vuex仓库 
   import store from '@/store'
-  // 引入修改用户信息的接口 
-  import { changeInfo } from '@/api/user'
+  // 引入修改用户信息、检查用户名可用性的接口 
+  import { changeInfo, ifNameAvailable } from '@/api/user'
 
   export default {
     name: 'Dashboard',
@@ -70,10 +70,14 @@
       TestNickname() {
         this.InputLoading = true
         this.TestResult = ''
-        setTimeout(() => {
+        // 调用api/ifNameAvailable，检测用户名是否可用
+        ifNameAvailable(this.nickname).then(response => {
+          const { data } = response
           this.InputLoading = false
-          this.TestResult = '不可用！'
-        }, 1000);
+          this.TestResult = data
+        }).catch(error => {
+          this.InputLoading = false
+        })
       },
       // 保存用户信息
       SaveInfo() {
@@ -86,9 +90,9 @@
       this.$store.dispatch('cropper/CropImage', this.avatar)
 
       // 检测有没有成功给vuex赋值
-      setTimeout(() => {
-        // console.log(store.getters.CroppedImage)
-      }, 100);
+      // setTimeout(() => {
+      //   // console.log(store.getters.CroppedImage)
+      // }, 100);
     },
   }
 
