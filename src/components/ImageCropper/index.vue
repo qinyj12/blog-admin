@@ -50,7 +50,8 @@
 // 引入vuex
 import store from '@/store'
 // 引入上传头像的接口
-import { upLoadAvatar } from '@/api/user'
+import { uploadAvatar } from '@/api/user'
+import axios from 'axios'
 export default {
     data() {
         return {
@@ -117,9 +118,8 @@ export default {
         uploadHeadUrl_c(file) {
             const formData = new FormData()
             formData.append('avatar', file)
-            // console.log(formData)
-            // 此处加入ajax，把formdata传到后端
-            upLoadAvatar(formData).then(response => {console.log(response)})
+            console.log(formData)
+            uploadAvatar(formData).then(response => {console.log(response)})
 
             // 释放内存
             // window.URL.revokeObjectURL(file)

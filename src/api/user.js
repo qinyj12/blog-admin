@@ -29,14 +29,12 @@ export function ifNameAvailable(name) {
 }
 
 // 这是用户上传/修改用户名的接口
-export function upLoadAvatar(avatar) {
+export function uploadAvatar(formdata) {
   return request({
     url: 'http://127.0.0.1:5000/avatar/',
     method: 'post',
-    // headers: {'Content-Type': 'multipart/form-data'},
-    // data: avatar
-    // 似乎blob是个二进制文件，后端无法接收
-    data: Buffer.from(avatar)
+    headers: {'Content-Type': 'multipart/form-data'},
+    data: formdata
   })
 }
 
