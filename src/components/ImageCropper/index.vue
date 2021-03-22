@@ -51,7 +51,6 @@
 import store from '@/store'
 // 引入上传头像的接口
 import { uploadAvatar } from '@/api/user'
-import axios from 'axios'
 export default {
     data() {
         return {
@@ -110,19 +109,19 @@ export default {
                 console.log(data)
                 // var fileName = "goods" + this.fileinfo.uid
                 this.dialogVisible = false
-                this.imageCut = URL.createObjectURL(data) // 把剪裁好的 图片放在上传框里
-                this.uploadHeadUrl_c(data)
+                this.imageCut = URL.createObjectURL(data) // 把剪裁好的图片放在上传框里
+                this.uploadHeadUrl_c(data) // 上传裁剪后的图片到后端
             })
         },
         // 上传到服务器
         uploadHeadUrl_c(file) {
             const formData = new FormData()
+            // 上传剪切后的图像
             formData.append('avatar', file)
-            console.log(formData)
             uploadAvatar(formData).then(response => {console.log(response)})
-
             // 释放内存
-            // window.URL.revokeObjectURL(file)
+            window.URL.revokeObjectURL(file)
+
         },
         // 调整剪切框、剪切后的图片等元素的大小
         CropperSize(size) {

@@ -28,7 +28,7 @@ export function ifNameAvailable(name) {
   })
 }
 
-// 这是用户上传/修改用户名的接口
+// 这是用户上传/修改用户头像的接口
 export function uploadAvatar(formdata) {
   return request({
     url: 'http://127.0.0.1:5000/avatar/',

@@ -1,4 +1,4 @@
-// 这是定义登录用户的两种角色：admin-token, editor-token，似乎也只用于下文定义的本地api
+// 这是定义登录用户的两种角色：admin-token, editor-token，只用于下文定义的本地api
 const tokens = {
   admin: {
     token: 'admin-token'

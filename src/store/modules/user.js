@@ -35,7 +35,7 @@ const actions = {
       // trim()是掐头去尾删掉空格
       // 从api/user调用login方法
       login({ username: username.trim(), password: password }).then(response => {
-        console.log('调用login方法，把账密传到后盾，尝试匹配')
+        console.log('调用login方法，把账密传到后端，尝试匹配')
         console.log('成功匹配，拿到的response(包含token)是')
         console.log(response)
         const { data } = response
