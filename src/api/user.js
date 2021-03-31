@@ -38,6 +38,14 @@ export function uploadAvatar(formdata) {
   })
 }
 
+// 从后端查询最新的用户信息，然后更新前端的token
+export function updateToken() {
+  return request({
+    url: 'http://127.0.0.1:5000/token/update',
+    method: 'get',
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',

@@ -4,7 +4,7 @@
     <div class="dashboard-text-small">头像修改</div>
 
     <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" />
+    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" :UploadFunc="uploadAvatarAPI"/>
 
     <div class="dashboard-text-small">昵称修改</div>
     <el-input
@@ -31,10 +31,6 @@
     >
       {{TestResult}}
     </span>
-
-    <div class="submit-button">
-      <el-button type="primary" @click="SaveInfo">保存更改</el-button>
-    </div>
     
   </div>
 </template>
@@ -45,9 +41,10 @@
   import ImageCropper from '@/components/ImageCropper/index'
   // 引入vuex仓库 
   import store from '@/store'
-  // 引入修改用户信息、检查用户名可用性的接口 
-  import { changeInfo, ifNameAvailable } from '@/api/user'
-
+  // 引入检查用户名可用性的接口 
+  import { ifNameAvailable } from '@/api/user'
+  // 引入上传头像的接口
+  import { uploadAvatar } from '@/api/user'
   export default {
     name: 'Dashboard',
     data() {
@@ -55,6 +52,7 @@
         nickname: '',
         InputLoading: false, // 点击按钮检测昵称可用性，按钮要显示一个loading动画
         TestResult: '', // 检测昵称可用性后的结果
+        uploadAvatarAPI: uploadAvatar
       }
     },
     components: {
@@ -79,10 +77,6 @@
           this.InputLoading = false
         })
       },
-      // 保存用户信息
-      SaveInfo() {
-        changeInfo(store.getters.token).then(res => console.log(res))
-      }
     },
     mounted() {
       this.nickname = this.name

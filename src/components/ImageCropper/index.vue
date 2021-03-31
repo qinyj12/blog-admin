@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="image-cropper-container">
         <!-- element 上传图片按钮 -->
         <el-upload
             class="upload-demo"
@@ -13,7 +13,7 @@
             <div class="el-upload-icon-text">
                 <i class="el-icon-upload" />
                 <div class="el-upload__text">点击上传</div>
-                <div class="el-upload__tip">支持绝大多数图片格式，单张图片最大支持5MB</div>
+                <!-- <div class="el-upload__tip">最大5MB</div> -->
             </div>
 
         </el-upload>
@@ -44,13 +44,17 @@
                 <el-button type="primary" :loading="loading" @click="finish">确 认</el-button>
             </div>
         </el-dialog>
+
+        <div>
+            <el-button @click="ConfirmImage">确认上传</el-button>
+        </div>
     </div>
 </template>
 <script>
 // 引入vuex
 import store from '@/store'
-// 引入上传头像的接口
-import { uploadAvatar } from '@/api/user'
+// // 引入上传头像的接口
+// import { uploadAvatar } from '@/api/user'
 export default {
     data() {
         return {
@@ -77,11 +81,24 @@ export default {
             picsList: [], // 页面显示的数组
             // 防止重复提交
             loading: false,
-            imageCut: '', // 已经剪裁好的图片
+            imageCut: '', // 已经剪裁好的图片，用于在前端显示
+            imageCutForAPI: '', // 已经剪裁好的图片，用于传送到后端
         }
     },
     // 这是截图框的宽高，从父元素传值。
-    props:['CropWidth', 'CropHeight'],
+    // props:['CropWidth', 'CropHeight', 'UploadFunc'],
+    props: {
+        CropWidth: String,
+        CropHeight: String,
+        // 接收父组件传来的后端接口，调用这个后端接口，上传图片
+        UploadFunc: {
+            default() {
+                return function() {
+                    alert('没有定义上传函数')
+                }
+            }
+        }
+    },
     methods: {
         // 上传按钮   限制图片大小
         changeUpload(file, fileList) {
@@ -110,7 +127,7 @@ export default {
                 // var fileName = "goods" + this.fileinfo.uid
                 this.dialogVisible = false
                 this.imageCut = URL.createObjectURL(data) // 把剪裁好的图片放在上传框里
-                this.uploadHeadUrl_c(data) // 上传裁剪后的图片到后端
+                this.imageCutForAPI = data // 把data赋值给imageCutForAPI，用于传送给后端
             })
         },
         // 上传到服务器
@@ -118,29 +135,40 @@ export default {
             const formData = new FormData()
             // 上传剪切后的图像
             formData.append('avatar', file)
-            uploadAvatar(formData).then(response => {console.log(response)})
+            // UploadFunc定义的api是在父组件中定义的
+            this.UploadFunc(formData).then(response => {
+                console.log(response)
+                // 更新token
+                this.$store.dispatch('user/updateToken')
+            })
             // 释放内存
             window.URL.revokeObjectURL(file)
-
         },
         // 调整剪切框、剪切后的图片等元素的大小
         CropperSize(size) {
             document.querySelector('.el-upload-dragger').style.setProperty('--CropWidth', size.width)
             document.querySelector('.el-upload-dragger').style.setProperty('--CropHeight', size.height)
-        }
+        },
+        // 确认上传裁剪后的图片
+        ConfirmImage() {
+            // 上传图片
+            this.uploadHeadUrl_c(this.imageCutForAPI)
+            // 清除imageCut
+            this.imageCut = ''
+        },
     },
     computed: {
         // 监听vuex仓库里CroppedImage的值
-        CroppedImageInStore() {
-            return store.getters.CroppedImage
-        }
+        // CroppedImageInStore() {
+        //     return store.getters.CroppedImage
+        // }
     },
     watch: {
         // 一旦vuex仓库里CroppedImage的值变化，前端也要发生变化，显示当前文章所选择的封面
-        CroppedImageInStore() {
-            console.log('检测到vuex仓库发生变化，前端cropper改变图片')
-            this.imageCut = store.getters.CroppedImage
-        }
+        // CroppedImageInStore() {
+        //     console.log('检测到vuex仓库发生变化，前端cropper改变图片')
+        //     // this.imageCut = store.getters.CroppedImage
+        // }
     },
     mounted() {
         // 动态设置cropper的宽和高
@@ -148,7 +176,7 @@ export default {
     },
     // cropper组件销毁，vuex的状态清除，这样才能CroppedImageInStore函数才能每次都生效
     destroyed() {
-        this.$store.dispatch('cropper/CropImage', '')
+        // this.$store.dispatch('cropper/CropImage', '')
     },
 }
 </script>
@@ -156,6 +184,7 @@ export default {
 $CropWidth: var(--CropWidth);
 $CropHeight: var(--CropHeight);
 
+// 这是头像修改框
 .el-upload-dragger {
     width: $CropWidth;
     height: $CropHeight;
@@ -176,5 +205,19 @@ $CropHeight: var(--CropHeight);
 // 这是图标和文字
 .el-upload-icon-text {
     padding: 0 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .el-icon-upload {
+        margin: 0px;
+    }
+
+    .el-upload__text {
+        margin-top: 5px;
+    }
 }
+
 </style>

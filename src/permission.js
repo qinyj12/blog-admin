@@ -33,8 +33,8 @@ router.beforeEach(async(to, from, next) => {
         console.log('路由层面：读取store.getters.name，如果为空')
         try {
           // get user info
-          console.log('路由层面：try调用store.dispatch("user/getInfo")')
-          await store.dispatch('user/getInfo')
+          console.log('路由层面：try调用store.dispatch("user/updateToken")')
+          await store.dispatch('user/updateToken')
 
           next()
         } catch (error) {
