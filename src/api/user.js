@@ -19,11 +19,11 @@ export function getInfo(token) {
   })
 }
 
-// 这是检测用户名可用性的接口
-export function ifNameAvailable(name) {
+// 这是修改用户名的接口
+export function modifyUserName(name) {
   return request({
-    url: 'http://127.0.0.1:5000/name/availability',
-    method: 'get',
+    url: 'http://127.0.0.1:5000/name/',
+    method: 'post',
     params: { name }
   })
 }

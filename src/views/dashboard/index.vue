@@ -18,18 +18,18 @@
       plain
       class="nickname-button" 
       :loading="InputLoading"
-      @click="TestNickname"
+      @click="ModifyNickname"
     >
-      检测可用性
+      确认修改
     </el-button>
     <span 
       class="test-result" 
       :class="{
-        'test-result-success':TestResult == '可用',
-        'test-result-fail':TestResult != '可用'
+        'test-result-success':ifNameAvailable,
+        'test-result-fail':!ifNameAvailable
       }"
     >
-      {{TestResult}}
+      {{ModifyNameResult}}
     </span>
     
   </div>
@@ -42,7 +42,7 @@
   // 引入vuex仓库 
   import store from '@/store'
   // 引入检查用户名可用性的接口 
-  import { ifNameAvailable } from '@/api/user'
+  import { modifyUserName } from '@/api/user'
   // 引入上传头像的接口
   import { uploadAvatar } from '@/api/user'
   export default {
@@ -51,7 +51,8 @@
       return {
         nickname: '',
         InputLoading: false, // 点击按钮检测昵称可用性，按钮要显示一个loading动画
-        TestResult: '', // 检测昵称可用性后的结果
+        ModifyNameResult: '', // 检测昵称可用性后的结果
+        ifNameAvailable: null, // 昵称的可用性（后端返回结果）
         uploadAvatarAPI: uploadAvatar
       }
     },
@@ -65,14 +66,22 @@
       ])
     },
     methods: {
-      TestNickname() {
+      ModifyNickname() {
         this.InputLoading = true
-        this.TestResult = ''
-        // 调用api/ifNameAvailable，检测用户名是否可用
-        ifNameAvailable(this.nickname).then(response => {
+        this.ModifyNameResult = ''
+        // 调用api/modifyUserName，修改用户名
+        modifyUserName(this.nickname).then(response => {
           const { data } = response
           this.InputLoading = false
-          this.TestResult = data
+          this.ifNameAvailable = data.if_available
+          // 如果名字可用
+          if (data.if_available) {
+            this.ModifyNameResult = data.result
+            store.dispatch('user/updateToken')
+          // 如果名字不可用
+          } else {
+            this.ModifyNameResult = data.result
+          }
         }).catch(error => {
           this.InputLoading = false
         })
@@ -81,7 +90,7 @@
     mounted() {
       this.nickname = this.name
 
-      this.$store.dispatch('cropper/CropImage', this.avatar)
+      store.dispatch('cropper/CropImage', this.avatar)
 
       // 检测有没有成功给vuex赋值
       // setTimeout(() => {
