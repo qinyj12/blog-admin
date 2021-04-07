@@ -38,11 +38,20 @@ export function uploadAvatar(formdata) {
   })
 }
 
-// 从后端查询最新的用户信息，然后更新前端的token
+// 从后端查询当前用户的最新信息，然后更新前端的token
 export function updateToken() {
   return request({
     url: 'http://127.0.0.1:5000/token/update',
     method: 'get',
+  })
+}
+
+// 从后端查询所有用户的信息
+export function getAllUser(range_start, range_end) {
+  return request({
+    url: 'http://127.0.0.1:5000/userlist/',
+    method: 'get',
+    params: { range_start, range_end }
   })
 }
 

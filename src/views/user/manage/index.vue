@@ -10,34 +10,52 @@
                     <img :src="scope.row.avatar" class="user-avatar-img" />
                 </template>
             </el-table-column>
-            <el-table-column prop="jurisdiction" label="权限" width="150">
+            <el-table-column prop="roles" label="权限" width="150">
                 <template slot-scope="scope">
                     <div class="jurisdiction-box">
-                        <i :class="scope.row.jurisdiction == '管理员'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
-                        <span>{{scope.row.jurisdiction}}</span>
+                        <i :class="scope.row.roles == 'admin'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
+                        <span>{{scope.row.roles}}</span>
                     </div>
 
                 </template>
             </el-table-column>
             <el-table-column prop="phone" label="手机号"></el-table-column>
-            <el-table-column prop="addTime" label="加入日期"></el-table-column>
-            <el-table-column prop="recentlyActive" label="最近活跃"></el-table-column>
-            <el-table-column prop="articleNum" label="博客数量" width="100"></el-table-column>
+            <el-table-column prop="signup_time" label="加入日期"></el-table-column>
+            <!-- <el-table-column prop="articleNum" label="博客数量" width="100"></el-table-column> -->
             <el-table-column prop="operation" label="操作" width="80">
                 <template slot-scope="scope">
                     <el-button @click="ViewUser(scope.row)" type="text">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <div>
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="userTotalNum"
+                :page-size="2"
+                :hide-on-single-page="true"
+                @next-click="nextClick"
+                @prev-click="preClick"
+                @current-change="handleCurrentChange"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
 // 引入ArticleAuthor 的api
 import { ArticleAuthor } from '@/api/author'
+import { getAllUser } from '@/api/user'
 export default {
     data() {
         return {
             tableData: [],
+            userTotalNum: 0, // 用户总量，初始值0
+            NumPerPage: 2, // 每个分页显示的数量
+            rangeStart: 0, // 每次从后端拿的取值范围，即取[0:2]个user
+            rangeEnd: 2, // 每次从后端拿的取值范围，即取[0:2]个user
         }
     },
     methods: {
@@ -45,14 +63,43 @@ export default {
             this.$router.push({name: 'User', params: {UserId: UserDetail.id}})
         },
         // 获取文章作者
-        async GetAuthor() {
-            this.tableData = await ArticleAuthor()
-            
+        TransJson(val) {
+            return eval('(' + val + ')')
+        },
+
+        async GetUserInRange(range_start, range_end) {
+            return await getAllUser(range_start, range_end)
+        },
+        // 点击下一页
+        async nextClick() {
+            this.rangeStart = this.rangeStart + this.NumPerPage
+            this.rangeEnd = this.rangeEnd + this.NumPerPage
+            const res = await this.GetUserInRange(this.rangeStart, this.rangeEnd)
+            this.tableData = TransJson(res.data.userInRange)
+        },
+        // 点击下一页
+        async preClick() {
+            this.rangeStart = this.rangeStart - this.NumPerPage
+            this.rangeEnd = this.rangeEnd - this.NumPerPage
+            const res = await this.GetUserInRange(this.rangeStart, this.rangeEnd)
+            this.tableData = this.TransJson(res.data.userInRange)
+        },
+        // 点击具体某一页码
+        async handleCurrentChange(val) {
+            this.rangeStart = val * this.NumPerPage - this.NumPerPage
+            this.rangeEnd = val * this.NumPerPage
+            const res = await this.GetUserInRange(this.rangeStart, this.rangeEnd)
+            this.tableData = this.TransJson(res.data.userInRange)
         }
     },
     async mounted() {
         // 先把api临时定义的author信息获取了，并赋值
-        await this.GetAuthor()
+        // await this.GetAuthor()
+
+        const res = await this.GetUserInRange(this.rangeStart, this.rangeEnd)
+        this.userTotalNum = res.data.totalNum
+        this.tableData = this.TransJson(res.data.userInRange)
+        
     },
     
 }
