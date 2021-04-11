@@ -3,7 +3,7 @@
     <div class="user-text-small">编辑头像</div>
 
     <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" />
+    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" :UploadFunc="uploadAvatarAPI"/>
 
     <div class="user-text-small">编辑昵称</div>
     <el-input
@@ -59,8 +59,8 @@
     </span>
 
     <div class="user-text-small">编辑权限</div>
-    <el-radio-group v-model="JurisdictionRadio">
-      <el-radio-button label="管理员"></el-radio-button>
+    <el-radio-group v-model="RolesRadio">
+      <el-radio-button label="admin"></el-radio-button>
       <el-radio-button label="作者"></el-radio-button>
       <el-radio-button label="访客" disabled></el-radio-button>
     </el-radio-group>
@@ -81,8 +81,8 @@
   import store from '@/store'
   // 引入修改用户信息的接口 
   import { changeInfo } from '@/api/user'
-  // 引入ArticleAuthor 的api
-import { ArticleAuthor } from '@/api/author'
+  // 引入getIdInfo 的api
+import { getIdInfo } from '@/api/user'
 
   export default {
     name: 'Dashboard',
@@ -94,8 +94,9 @@ import { ArticleAuthor } from '@/api/author'
             phone: '',
             PhoneLoading: false, 
             TestPhoneResult: '',
-            JurisdictionRadio: '',
-            CurrentUserDetail: {} // 根据路由拿到当前用户的id，从api取值后赋值给CurrentUserDetail
+            RolesRadio: '',
+            CurrentUserDetail: {}, // 根据路由拿到当前用户的id，从api取值后赋值给CurrentUserDetail
+            uploadAvatarAPI: this.demo
 
         }
     },
@@ -106,6 +107,9 @@ import { ArticleAuthor } from '@/api/author'
 
     },
     methods: {
+        demo() {
+          alert('demo')
+        },
         TestNickname() {
             this.NicknameLoading = true
             this.TestNameResult = ''
@@ -139,13 +143,13 @@ import { ArticleAuthor } from '@/api/author'
                 }
             // 如果UserId是数字
             } else {
-                // 通过ArticleAuthor api，获取用户的昵称、头像、电话、权限，并赋值给currentUserDetail
-                await ArticleAuthor().then(res => {
-                    let TargetUser = res.find(_ => {return _.id == UserId})
+                // 通过getIdInfo api，获取用户的昵称、头像、电话、权限，并赋值给currentUserDetail
+                await getIdInfo(_).then(res => {
+                    let TargetUser = res.data
                     this.CurrentUserDetail.name = TargetUser.name
                     this.CurrentUserDetail.avatar = TargetUser.avatar
                     this.CurrentUserDetail.phone = TargetUser.phone
-                    this.CurrentUserDetail.jurisdiction = TargetUser.jurisdiction
+                    this.CurrentUserDetail.roles = TargetUser.roles
                 })
             }
         }
@@ -154,7 +158,7 @@ import { ArticleAuthor } from '@/api/author'
         // 先根据路由，拿到当前用户的详细资料，并赋值给CurrentUserDetail
         await this.getCurrentUserDetail(this.$route.params.UserId)
         // 从CurrentUserDetail中取出avatar、name、phone等值，赋值到输入框里
-        this.JurisdictionRadio = this.CurrentUserDetail.jurisdiction
+        this.RolesRadio = this.CurrentUserDetail.roles
         this.nickname = this.CurrentUserDetail.name
         this.phone = this.CurrentUserDetail.phone
         // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值

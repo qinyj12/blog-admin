@@ -49,9 +49,18 @@ export function updateToken() {
 // 从后端查询所有用户的信息
 export function getAllUser(range_start, range_end) {
   return request({
-    url: 'http://127.0.0.1:5000/userlist/',
+    url: 'http://127.0.0.1:5000/user/collection/list/',
     method: 'get',
     params: { range_start, range_end }
+  })
+}
+
+// 根据userID从后端查询某个用户的信息
+export function getIdInfo(userid) {
+  return request({
+    url: 'http://127.0.0.1:5000/user/id/',
+    method: 'get',
+    params: { userid }
   })
 }
 
