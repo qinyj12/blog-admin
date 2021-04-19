@@ -20,15 +20,15 @@ export function getInfo(token) {
 }
 
 // 这是修改用户名的接口
-export function modifyUserName(name) {
+export function modifyUserName(targetUser, name) {
   return request({
     url: 'http://127.0.0.1:5000/name/',
     method: 'post',
-    params: { name }
+    params: { targetUser, name }
   })
 }
 
-// 这是用户上传/修改用户头像的接口
+// 这是用户上传/修改用户头像的接口，目标用户的id保存在formdata里
 export function uploadAvatar(formdata) {
   return request({
     url: 'http://127.0.0.1:5000/avatar/',

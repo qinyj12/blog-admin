@@ -3,7 +3,13 @@
     <div class="user-text-small">编辑头像</div>
 
     <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" :UploadFunc="uploadAvatarAPI"/>
+    <ImageCropper 
+      :CropWidth="'100px'" 
+      :CropHeight="'100px'" 
+      :UploadFunc="uploadAvatarAPI"
+      :imageCutOutside="avatar"
+      :TargetId="this.$route.params.UserId.toString()"
+    />
 
     <div class="user-text-small">编辑昵称</div>
     <el-input
@@ -17,18 +23,18 @@
       plain
       class="nickname-button" 
       :loading="NicknameLoading"
-      @click="TestNickname"
+      @click="ModifyNickname"
     >
-      检测可用性
+      确认修改
     </el-button>
     <span 
       class="test-result" 
       :class="{
-        'test-result-success':TestNameResult=='可用！',
-        'test-result-fail':TestNameResult=='不可用！'
+        'test-result-success':ifNameAvailable,
+        'test-result-fail':!ifNameAvailable
       }"
     >
-      {{TestNameResult}}
+      {{ModifyNameResult}}
     </span>
 
     <div class="user-text-small">编辑电话</div>
@@ -82,22 +88,27 @@
   // 引入修改用户信息的接口 
   import { changeInfo } from '@/api/user'
   // 引入getIdInfo 的api
-import { getIdInfo } from '@/api/user'
+  import { getIdInfo } from '@/api/user'
+  // 引入上传头像的接口
+  import { uploadAvatar } from '@/api/user'
+  // 引入修改用户名的接口
+  import{ modifyUserName } from '@/api/user'
 
   export default {
     name: 'Dashboard',
     data() {
         return {
             nickname: '',
+            avatar: '', 
             NicknameLoading: false, // 点击按钮检测昵称可用性，按钮要显示一个loading动画
-            TestNameResult: '', // 检测昵称可用性后的结果
+            ModifyNameResult: '', // 检测昵称可用性后的结果
+            ifNameAvailable: null,
             phone: '',
             PhoneLoading: false, 
             TestPhoneResult: '',
             RolesRadio: '',
             CurrentUserDetail: {}, // 根据路由拿到当前用户的id，从api取值后赋值给CurrentUserDetail
-            uploadAvatarAPI: this.demo
-
+            uploadAvatarAPI: uploadAvatar,
         }
     },
     components: {
@@ -107,16 +118,25 @@ import { getIdInfo } from '@/api/user'
 
     },
     methods: {
-        demo() {
-          alert('demo')
-        },
-        TestNickname() {
-            this.NicknameLoading = true
-            this.TestNameResult = ''
-            setTimeout(() => {
-                this.NicknameLoading = false
-                this.TestNameResult = '不可用！'
-            }, 1000);
+        ModifyNickname() {
+          this.InputLoading = true
+          this.ModifyNameResult = ''
+          // 调用api/modifyUserName，修改用户名，传参(user id, 修改后的nickname)
+          modifyUserName(this.$route.params.UserId.toString(), this.nickname).then(response => {
+            const { data } = response
+            this.InputLoading = false
+            this.ifNameAvailable = data.if_available
+            // 如果名字可用
+            if (data.if_available) {
+              this.ModifyNameResult = data.result
+              store.dispatch('user/updateToken')
+            // 如果名字不可用
+            } else {
+              this.ModifyNameResult = data.result
+            }
+          }).catch(error => {
+            this.InputLoading = false
+          })
         },
         TestPhone() {
             this.PhoneLoading = true
@@ -161,8 +181,9 @@ import { getIdInfo } from '@/api/user'
         this.RolesRadio = this.CurrentUserDetail.roles
         this.nickname = this.CurrentUserDetail.name
         this.phone = this.CurrentUserDetail.phone
+        this.avatar = this.CurrentUserDetail.avatar
         // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
-        this.$store.dispatch('cropper/CropImage', this.CurrentUserDetail.avatar)
+        // this.$store.dispatch('cropper/CropImage', this.CurrentUserDetail.avatar)
     },
   }
 

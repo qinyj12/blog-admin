@@ -4,7 +4,12 @@
     <div class="dashboard-text-small">头像修改</div>
 
     <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper :CropWidth="'100px'" :CropHeight="'100px'" :UploadFunc="uploadAvatarAPI"/>
+    <ImageCropper 
+      :CropWidth="'100px'" 
+      :CropHeight="'100px'" 
+      :UploadFunc="uploadAvatarAPI"
+      :TargetId="usid.toString()"
+    />
 
     <div class="dashboard-text-small">昵称修改</div>
     <el-input
@@ -41,7 +46,7 @@
   import ImageCropper from '@/components/ImageCropper/index'
   // 引入vuex仓库 
   import store from '@/store'
-  // 引入检查用户名可用性的接口 
+  // 引入修改用户名的接口 
   import { modifyUserName } from '@/api/user'
   // 引入上传头像的接口
   import { uploadAvatar } from '@/api/user'
@@ -63,6 +68,7 @@
       ...mapGetters([
         'name', // 用vuex的mapgetters方法，拿到从getters.js中暴露出来的参数
         'avatar',
+        'usid'
       ])
     },
     methods: {
@@ -70,7 +76,7 @@
         this.InputLoading = true
         this.ModifyNameResult = ''
         // 调用api/modifyUserName，修改用户名
-        modifyUserName(this.nickname).then(response => {
+        modifyUserName(this.usid, this.nickname).then(response => {
           const { data } = response
           this.InputLoading = false
           this.ifNameAvailable = data.if_available
@@ -89,8 +95,6 @@
     },
     mounted() {
       this.nickname = this.name
-
-      store.dispatch('cropper/CropImage', this.avatar)
 
       // 检测有没有成功给vuex赋值
       // setTimeout(() => {

@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    usid: ''
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_USID: (state, usid) => {
+    state.usid = usid
   }
 }
 
@@ -70,9 +74,10 @@ const actions = {
         }
         // 返回值是{'info':{name:xx,avatar:xx...},'token':xxxx}
         // 拿到用户的信息（未加密）
-        const { name, avatar } = data.info
+        const { name, avatar, id } = data.info
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_USID', id)
         // 拿到token（加密），并用setoken赋值到cookies
         setToken(data.token)
 

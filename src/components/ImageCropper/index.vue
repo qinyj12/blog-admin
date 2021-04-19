@@ -9,7 +9,7 @@
             :show-file-list="false"
             :on-change="changeUpload"
         >
-            <img v-if="imageCut" :src="imageCut" class="image-cut"> <!--这个显示剪裁好以后的图片-->
+            <img v-if="imageCutInside" :src="imageCutInside" class="image-cut"> <!--这个显示剪裁好以后的图片-->
             <div class="el-upload-icon-text">
                 <i class="el-icon-upload" />
                 <div class="el-upload__text">点击上传</div>
@@ -81,22 +81,39 @@ export default {
             picsList: [], // 页面显示的数组
             // 防止重复提交
             loading: false,
-            imageCut: '', // 已经剪裁好的图片，用于在前端显示
+            // vue2.0中props只能从外向内单向改变，子组件内部无法改变，所以用额外的变量来储存props的值
+            imageCutInside: '',
             imageCutForAPI: '', // 已经剪裁好的图片，用于传送到后端
         }
     },
     // 这是截图框的宽高，从父元素传值。
     // props:['CropWidth', 'CropHeight', 'UploadFunc'],
     props: {
+        // 定义组件的大小
         CropWidth: String,
         CropHeight: String,
         // 接收父组件传来的后端接口，调用这个后端接口，上传图片
         UploadFunc: {
+            // 如果父组件没有传值，调用初始值
             default() {
                 return function() {
                     alert('没有定义上传函数')
                 }
             }
+        },
+        // 定义在裁剪框中显示的图像，接收外部的值，来制造初始图像
+        imageCutOutside: {
+            type: String,
+            default: ''
+        },
+        // 确定给数据库的哪条记录做修改
+        TargetId: String
+    },
+    watch: {
+        // 由于imageCutOutside定义在prop中，只能从外部单向改变，不能从子组件内部改变
+        // 所以创造imageCutInside变量，并且实时监控外部传值imageCutOutside的变化进行改变
+        imageCutOutside() {
+            this.imageCutInside = this.imageCutOutside
         }
     },
     methods: {
@@ -126,7 +143,7 @@ export default {
                 console.log(data)
                 // var fileName = "goods" + this.fileinfo.uid
                 this.dialogVisible = false
-                this.imageCut = URL.createObjectURL(data) // 把剪裁好的图片放在上传框里
+                this.imageCutInside = URL.createObjectURL(data) // 把剪裁好的图片放在上传框里
                 this.imageCutForAPI = data // 把data赋值给imageCutForAPI，用于传送给后端
             })
         },
@@ -134,7 +151,8 @@ export default {
         uploadHeadUrl_c(file) {
             const formData = new FormData()
             // 上传剪切后的图像
-            formData.append('avatar', file)
+            formData.append('avatar', file) // 用avatar来确定修改成什么头像/封面（及剪切后的图像）
+            formData.append('id', this.TargetId) // 用id来确定给数据库的哪条记录做修改
             // UploadFunc定义的api是在父组件中定义的
             this.UploadFunc(formData).then(response => {
                 console.log(response)
@@ -153,22 +171,14 @@ export default {
         ConfirmImage() {
             // 上传图片
             this.uploadHeadUrl_c(this.imageCutForAPI)
+            this.$message({
+                showClose: true,
+                message: '成功调用ConfirmImage函数，但没有验证后端返回结果',
+                type: 'success'
+            });
             // 清除imageCut
-            this.imageCut = ''
+            // this.imageCutInside = ''
         },
-    },
-    computed: {
-        // 监听vuex仓库里CroppedImage的值
-        // CroppedImageInStore() {
-        //     return store.getters.CroppedImage
-        // }
-    },
-    watch: {
-        // 一旦vuex仓库里CroppedImage的值变化，前端也要发生变化，显示当前文章所选择的封面
-        // CroppedImageInStore() {
-        //     console.log('检测到vuex仓库发生变化，前端cropper改变图片')
-        //     // this.imageCut = store.getters.CroppedImage
-        // }
     },
     mounted() {
         // 动态设置cropper的宽和高
