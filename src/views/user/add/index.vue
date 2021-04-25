@@ -1,14 +1,13 @@
 <template>
   <div class="user-container">
-    <div class="user-text-small">编辑头像</div>
-
+    <div class="user-text-small">编辑头像add</div>
     <!-- 从父组件给图片剪切框传值 -->
     <ImageCropper 
       :CropWidth="'100px'" 
       :CropHeight="'100px'" 
       :UploadFunc="uploadAvatarAPI"
       :imageCutOutside="avatar"
-      :TargetId="this.$route.params.UserId.toString()"
+      :TargetId="99"
     />
 
     <div class="user-text-small">编辑昵称</div>
@@ -113,7 +112,7 @@
   import{ modifyUserRole } from '@/api/user'
 
   export default {
-    name: 'editUser',
+    name: 'addUser',
     data() {
         return {
             nickname: '',
@@ -201,12 +200,14 @@
           })
         },
 
-        // 获取当前编辑的用户的详情
+
+        // 获取当前编辑的文章的详情
         async getCurrentUserDetail(UserId) {
             // 如果UserId不是数字
             let _ = parseFloat(UserId).toString()
             if (_ == 'NaN') {
-                if (UserId == 'add') {
+                if (UserId == 'new') {
+                    // 啥也不用管
                 } else {
                     this.$router.push('/404')
                 }
@@ -225,7 +226,6 @@
     },
     async mounted() {
         // 先根据路由，拿到当前用户的详细资料，并赋值给CurrentUserDetail
-        alert(this.$route.params.UserId)
         await this.getCurrentUserDetail(this.$route.params.UserId)
         // 从CurrentUserDetail中取出avatar、name、phone等值，赋值到输入框里
         this.RolesRadio = this.CurrentUserDetail.roles

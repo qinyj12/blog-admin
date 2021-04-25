@@ -13,7 +13,7 @@
             <el-table-column prop="roles" label="权限" width="150">
                 <template slot-scope="scope">
                     <div class="jurisdiction-box">
-                        <i :class="scope.row.roles == 'admin'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
+                        <i :class="scope.row.roles == '管理员'? 'fas fa-user-shield' : 'fas fa-user-lock'" class="jurisdiction-icon"></i>
                         <span>{{scope.row.roles}}</span>
                     </div>
 

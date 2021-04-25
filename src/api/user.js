@@ -28,6 +28,24 @@ export function modifyUserName(targetUser, name) {
   })
 }
 
+// 这是修改电话的接口
+export function modifyUserPhone(targetUser, phone) {
+  return request({
+    url: 'http://127.0.0.1:5000/phone/',
+    method: 'post',
+    params: { targetUser, phone }
+  })
+}
+
+// 这是修改用户权限的接口
+export function modifyUserRole(targetUser, role) {
+  return request({
+    url: 'http://127.0.0.1:5000/role/',
+    method: 'post',
+    params: { targetUser, role }
+  })
+}
+
 // 这是用户上传/修改用户头像的接口，目标用户的id保存在formdata里
 export function uploadAvatar(formdata) {
   return request({

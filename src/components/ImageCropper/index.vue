@@ -46,7 +46,7 @@
         </el-dialog>
 
         <div>
-            <el-button @click="ConfirmImage">确认上传</el-button>
+            <el-button @click="ConfirmImage" :disabled="HideUpdateIco">确认上传</el-button>
         </div>
     </div>
 </template>
@@ -84,6 +84,7 @@ export default {
             // vue2.0中props只能从外向内单向改变，子组件内部无法改变，所以用额外的变量来储存props的值
             imageCutInside: '',
             imageCutForAPI: '', // 已经剪裁好的图片，用于传送到后端
+            HideUpdateIco: true // 隐藏确认上传的按钮
         }
     },
     // 这是截图框的宽高，从父元素传值。
@@ -145,6 +146,7 @@ export default {
                 this.dialogVisible = false
                 this.imageCutInside = URL.createObjectURL(data) // 把剪裁好的图片放在上传框里
                 this.imageCutForAPI = data // 把data赋值给imageCutForAPI，用于传送给后端
+                this.HideUpdateIco = false // 显示“确认上传”的按钮
             })
         },
         // 上传到服务器
