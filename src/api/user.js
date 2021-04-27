@@ -19,12 +19,30 @@ export function getInfo(token) {
   })
 }
 
+// 这是新增用户的接口
+export function createUser(name, password, role) {
+  return request({
+    url: 'http://127.0.0.1:5000/user/create',
+    method: 'put',
+    params: { name, password, role }
+  })
+}
+
 // 这是修改用户名的接口
 export function modifyUserName(targetUser, name) {
   return request({
     url: 'http://127.0.0.1:5000/name/',
     method: 'post',
     params: { targetUser, name }
+  })
+}
+
+// 这是查询用户名是否可用的接口
+export function testUserName(name) {
+  return request({
+    url: 'http://127.0.0.1:5000/name/availability',
+    method: 'get',
+    params: { name }
   })
 }
 

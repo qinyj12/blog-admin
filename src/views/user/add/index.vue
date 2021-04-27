@@ -1,30 +1,21 @@
 <template>
   <div class="user-container">
-    <div class="user-text-small">编辑头像add</div>
-    <!-- 从父组件给图片剪切框传值 -->
-    <ImageCropper 
-      :CropWidth="'100px'" 
-      :CropHeight="'100px'" 
-      :UploadFunc="uploadAvatarAPI"
-      :imageCutOutside="avatar"
-      :TargetId="99"
-    />
 
     <div class="user-text-small">编辑昵称</div>
     <el-input
       v-model="nickname"
       placeholder="请输入昵称"
-      suffix-icon="el-icon-user-solid"
-      class="short-input"
-    />
+      class="short-input">
+      <i slot="suffix" class="el-input__icon fas fa-user"></i>
+    </el-input>
     <el-button 
       type="warning" 
       plain
       class="nickname-button" 
       :loading="NicknameLoading"
-      @click="ModifyNickname"
+      @click="TestNickName"
     >
-      修改昵称
+      检测可用性
     </el-button>
     <span 
       class="test-result" 
@@ -33,34 +24,24 @@
         'test-result-fail':!ifNameAvailable
       }"
     >
-      {{ModifyNameResult}}
+      {{TestNameResult}}
     </span>
 
-    <div class="user-text-small">编辑电话</div>
+    <div class="user-text-small">编辑密码</div>
     <el-input
-      v-model="phone"
-      placeholder="请输入电话号码"
-      suffix-icon="el-icon-mobile-phone"
       class="short-input"
-    />
-
-    <el-button 
-      type="warning" 
-      plain
-      class="nickname-button" 
-      :loading="PhoneLoading"
-      @click="ModifyPhone"
-    >
-      修改电话
-    </el-button>
+      placeholder="请输入初始密码"
+      v-model="password">
+      <i slot="suffix" class="el-input__icon fas fa-key"></i>
+    </el-input>
     <span 
       class="test-result" 
       :class="{
-        'test-result-success':ifPhoneAvailable,
-        'test-result-fail':!ifPhoneAvailable
+        'test-result-success':ifPasswdAvailable,
+        'test-result-fail':!ifPasswdAvailable
       }"
     >
-      {{ModifyPhoneResult}}
+      {{TestPasswdResult}}
     </span>
 
     <div class="user-text-small">编辑权限</div>
@@ -69,16 +50,6 @@
       <el-radio-button label="作者"></el-radio-button>
       <el-radio-button label="访客" disabled></el-radio-button>
     </el-radio-group>
-
-    <el-button 
-      type="warning" 
-      plain
-      class="nickname-button" 
-      :loading="RoleLoading"
-      @click="ModifyRole"
-    >
-      修改权限
-    </el-button>
     <span 
       class="test-result" 
       :class="{
@@ -86,31 +57,28 @@
         'test-result-fail':!ifRoleAvailable
       }"
     >
-      {{ModifyRoleResult}}
+      {{TestRoleResult}}
     </span>
+    
+    <div class="user-text-small">
+      <el-button 
+        type="success"
+        plain
+        :loading="ConfirmLoading"
+        @click="ConfirmAdd"
+      >
+        确定
+      </el-button>
+    </div>
 
   </div>
 </template>
 
 <script>
-  // import { mapGetters } from 'vuex'
-  // 引入imageCropper模块
-  import ImageCropper from '@/components/ImageCropper/index'
-  // 引入vuex仓库 
-  import store from '@/store'
-  // 引入修改用户信息的接口 
-  import { changeInfo } from '@/api/user'
-  // 引入getIdInfo 的api
-  import { getIdInfo } from '@/api/user'
-  // 引入上传头像的接口
-  import { uploadAvatar } from '@/api/user'
-  // 引入修改用户名的接口
-  import{ modifyUserName } from '@/api/user'
-  // 引入修改电话的接口
-  import{ modifyUserPhone } from '@/api/user'
-  // 引入修改权限的接口
-  import{ modifyUserRole } from '@/api/user'
-
+  // 引入检测用户名可用性的接口
+  import { testUserName } from '@/api/user'
+  // 新增用户的接口
+  import { createUser } from '@/api/user'
   export default {
     name: 'addUser',
     data() {
@@ -118,122 +86,71 @@
             nickname: '',
             avatar: '', 
             NicknameLoading: false, // 点击按钮检测昵称可用性，按钮要显示一个loading动画
-            ModifyNameResult: '', // 检测昵称可用性后的结果
-            ifNameAvailable: null,
-            ifPhoneAvailable: null,
-            phone: '',
-            PhoneLoading: false, 
-            ModifyPhoneResult: '',
-            RoleLoading: false,
-            RolesRadio: '',
+            ifNameAvailable: null, 
+            ifPasswdAvailable: null,
             ifRoleAvailable: null,
-            ModifyRoleResult: '',
-            CurrentUserDetail: {}, // 根据路由拿到当前用户的id，从api取值后赋值给CurrentUserDetail
-            uploadAvatarAPI: uploadAvatar,
+            TestNameResult: '', // 检测昵称可用性后的结果
+            TestPasswdResult: '',
+            TestRoleResult: '',
+            password: '',
+            RolesRadio: '',
+            ConfirmLoading: false
         }
-    },
-    components: {
-        ImageCropper
-    },
-    computed: {
-
     },
     methods: {
-        ModifyNickname() {
-          this.NicknameLoading = true
-          this.ModifyNameResult = ''
-          // 调用api/modifyUserName，修改用户名，传参(user id, 修改后的nickname)
-          modifyUserName(this.$route.params.UserId.toString(), this.nickname).then(response => {
-            const { data } = response
-            this.NicknameLoading = false
-            this.ifNameAvailable = data.if_available
-            // 如果名字可用
-            if (data.if_available) {
-              this.ModifyNameResult = data.result
-              store.dispatch('user/updateToken')
-            // 如果名字不可用
-            } else {
-              this.ModifyNameResult = data.result
-            }
-          }).catch(error => {
-            this.NicknameLoading = false
-          })
-        },
-        ModifyPhone() {
-          this.PhoneLoading = true
-          this.ModifyPhoneResult = ''
-          // 调用api/modifyUserPhone，修改权限，传参(user id, 修改后的电话)
-          modifyUserPhone(this.$route.params.UserId.toString(), this.phone).then(response => {
-            const { data } = response
-            this.PhoneLoading = false
-            this.ifPhoneAvailable = data.if_available
-            // 如果电话可用
-            if (data.if_available) {
-              this.ModifyPhoneResult = data.result
-              store.dispatch('user/updateToken')
-            // 如果电话不可用
-            } else {
-              this.ModifyPhoneResult = data.result
-            }
-          }).catch(error => {
-            this.PhoneLoading = false
-          })
-        },
-        ModifyRole() {
-          this.RoleLoading = true
-          this.ModifyRoleResult = ''
-          // 调用api/modifyUserRole，修改权限，传参(user id, 修改后的role)
-          modifyUserRole(this.$route.params.UserId.toString(), this.RolesRadio).then(response => {
-            const { data } = response
-            this.RoleLoading = false
-            this.ifRoleAvailable = data.if_available
-            // 如果权限可用
-            if (data.if_available) {
-              this.ModifyRoleResult = data.result
-              store.dispatch('user/updateToken')
-            // 如果权限不可用
-            } else {
-              this.ModifyRoleResult = data.result
-            }
-          }).catch(error => {
-            this.RoleLoading = false
-          })
-        },
-
-
-        // 获取当前编辑的文章的详情
-        async getCurrentUserDetail(UserId) {
-            // 如果UserId不是数字
-            let _ = parseFloat(UserId).toString()
-            if (_ == 'NaN') {
-                if (UserId == 'new') {
-                    // 啥也不用管
-                } else {
-                    this.$router.push('/404')
-                }
-            // 如果UserId是数字
-            } else {
-                // 通过getIdInfo api，获取用户的昵称、头像、电话、权限，并赋值给currentUserDetail
-                await getIdInfo(_).then(res => {
-                    let TargetUser = res.data
-                    this.CurrentUserDetail.name = TargetUser.name
-                    this.CurrentUserDetail.avatar = TargetUser.avatar
-                    this.CurrentUserDetail.phone = TargetUser.phone
-                    this.CurrentUserDetail.roles = TargetUser.roles
-                })
-            }
-        }
-    },
-    async mounted() {
-        // 先根据路由，拿到当前用户的详细资料，并赋值给CurrentUserDetail
-        await this.getCurrentUserDetail(this.$route.params.UserId)
-        // 从CurrentUserDetail中取出avatar、name、phone等值，赋值到输入框里
-        this.RolesRadio = this.CurrentUserDetail.roles
-        this.nickname = this.CurrentUserDetail.name
-        this.phone = this.CurrentUserDetail.phone
-        this.avatar = this.CurrentUserDetail.avatar
-        // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
-        // this.$store.dispatch('cropper/CropImage', this.CurrentUserDetail.avatar)
+      TestNickName() {
+        this.NicknameLoading = true
+        testUserName(this.nickname).then(response => {
+          const { data } = response
+          this.NicknameLoading = false
+          this.ifNameAvailable = data.if_available
+          // 如果名字可用
+          if (data.if_available) {
+            this.TestNameResult = data.result
+          // 如果名字不可用
+          } else {
+            this.TestNameResult = data.result
+          }
+        }).catch(error => {
+          this.NicknameLoading = false
+        })
+      },
+      ResultAlert(message) {
+        this.$alert(message, '结果', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$router.push({name: 'UsersList'})
+          }
+        });
+      },
+      ConfirmAdd() {
+        this.TestNameResult = ''
+        this.TestPasswdResult = ''
+        this.TestRoleResult = ''
+        testUserName(this.nickname).then(resp => {
+          const { data } = resp
+          this.ifNameAvailable = data.if_available
+          // 如果名字不可用
+          if (!data.if_available) {
+            this.ifNameAvailable = false
+            this.TestNameResult = data.result
+          // 如果密码不可用
+          } else if (this.password.length < 6) {
+            this.ifPasswdAvailable = false
+            this.TestPasswdResult = '密码太短'
+          // 如果权限不可用（不在列表里）
+          } else if (['管理员', '作者'].indexOf(this.RolesRadio) == -1) {
+            this.ifPasswdAvailable = false
+            this.TestRoleResult = '权限不可用'
+          // 如果都可用
+          } else {
+            createUser(this.nickname, this.password, this.RolesRadio).then(r => {
+              const { data } = r
+              this.ResultAlert(data.result)
+            })
+          }
+        })
+      }
     },
   }
 

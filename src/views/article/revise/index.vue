@@ -183,8 +183,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// 引入font-awesome
-@import url('https://cdn.bootcdn.net/ajax/libs/font-awesome/5.9.0/css/all.min.css');
 // 引入mavon-editor的样式，对应的css标签是class="markdown-body"
 @import '../../../../node_modules/mavon-editor/dist/css/index.css';
 .article-container {

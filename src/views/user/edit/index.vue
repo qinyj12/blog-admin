@@ -225,7 +225,6 @@
     },
     async mounted() {
         // 先根据路由，拿到当前用户的详细资料，并赋值给CurrentUserDetail
-        alert(this.$route.params.UserId)
         await this.getCurrentUserDetail(this.$route.params.UserId)
         // 从CurrentUserDetail中取出avatar、name、phone等值，赋值到输入框里
         this.RolesRadio = this.CurrentUserDetail.roles

@@ -69,7 +69,7 @@ export default {
     // 登录表单的输入规则
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('username不能小于3'))
       } else {
         callback()
       }

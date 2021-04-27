@@ -107,7 +107,7 @@ export const constantRoutes = [
       {
         // 这里用articleId来判断正在被修改的是哪一篇文章
         path: 'new',
-        name: 'Article',
+        name: 'addArticle',
         component: () => import('@/views/article/revise/index'),
         meta: { title: '编辑文章', icon: 'fas fa-edit' }
       }
@@ -131,9 +131,14 @@ export const constantRoutes = [
   {
     path: '/adduser',
     component: Layout,
-    name: 'addUser',
-    component: () => import('@/views/user/add/index'),
-    meta: { title: '新增用户', icon: 'fas fa-clipboard-list' }
+    children: [
+      {
+        path: 'index',
+        name: 'addUser',
+        component: () => import('@/views/user/add/index'),
+        meta: { title: '新增用户', icon: 'fas fa-clipboard-list' }
+      }
+    ]
   },
 
   // 用户编辑页
@@ -150,7 +155,6 @@ export const constantRoutes = [
         meta: { title: '编辑用户', icon: 'fas fa-user-edit' }
       },
 
-      // 把这个路由隐藏掉，重新创建一个新的路由，点击后链接到/article/new
     ]
   },
   {
@@ -159,7 +163,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        name: 'Users',
+        name: 'UsersList',
         component: () => import('@/views/user/manage/index'),
         meta: { title: '用户管理', icon: 'fas fa-users' }
       }
