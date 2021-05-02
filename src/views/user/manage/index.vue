@@ -45,8 +45,6 @@
     </div>
 </template>
 <script>
-// 引入ArticleAuthor 的api
-import { ArticleAuthor } from '@/api/author'
 import { getAllUser } from '@/api/user'
 export default {
     data() {
@@ -93,9 +91,6 @@ export default {
         }
     },
     async mounted() {
-        // 先把api临时定义的author信息获取了，并赋值
-        // await this.GetAuthor()
-
         const res = await this.GetUserInRange(this.rangeStart, this.rangeEnd)
         this.userTotalNum = res.data.totalNum
         this.tableData = this.TransJson(res.data.userInRange)
