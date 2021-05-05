@@ -1,5 +1,6 @@
 <template>
   <div class="article-container">
+    <!-- <MdEditor /> -->
     <div class="article-text">文章编辑</div>
     <mavon-editor
       v-model="value"
@@ -65,6 +66,8 @@
 </template>
 
 <script>
+// 引入md编辑器vditor
+import MdEditor from '@/components/MdEditor/index'
 // 引入用el-upload和vue-cropper封装的图片裁剪上传组件
 import ImageCropper from '@/components/ImageCropper/index'
 // 引入tag-exist组件，这个组件也可以用在别的地方，所以单独封装
@@ -78,6 +81,7 @@ import { GetArticles } from '@/api/article'
 
 export default {
     components: {
+        MdEditor,
         ImageCropper,
         TagExist
     },

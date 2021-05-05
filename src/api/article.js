@@ -5,7 +5,16 @@ export function getAllArticle(range_start, range_end) {
         url: 'http://127.0.0.1:5000/article/collection/list/',
         method: 'get',
         params: { range_start, range_end }
-      })
+    })
+}
+
+export function uploadIllustration(formdata) {
+    return request({
+        url: 'http://127.0.0.1:5000/illustration/upload/',
+        method: 'put',
+        headers: {'Content-Type': 'multipart/form-data'},
+        data: formdata
+    })
 }
 
 export function GetArticles(params) {

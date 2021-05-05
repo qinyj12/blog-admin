@@ -169,6 +169,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/test',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Test',
+        component: () => import('@/views/test/index'),
+        meta: { title: '测试', icon: 'fas fa-vial' }
+      }
+    ]
+  },
 
   {
     path: '/nested',
