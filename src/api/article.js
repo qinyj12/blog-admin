@@ -17,6 +17,10 @@ export function uploadIllustration(formdata) {
     })
 }
 
+export function uploadIllustrationUrl() {
+    return 'http://127.0.0.1:5000/illustration/upload/'
+}
+
 export function GetArticles(params) {
     return new Promise((resolve) => {
         resolve(
