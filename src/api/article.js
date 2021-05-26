@@ -21,6 +21,15 @@ export function uploadIllustrationUrl() {
     return 'http://127.0.0.1:5000/illustration/upload/'
 }
 
+export function uploadArticle(formdata) {
+    return request({
+        url: 'http://127.0.0.1:5000/article/save/',
+        method: 'put',
+        headers: {'Content-Type': 'multipart/form-data'},
+        data: formdata
+    })
+}
+
 export function GetArticles(params) {
     return new Promise((resolve) => {
         resolve(

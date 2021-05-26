@@ -1,20 +1,6 @@
 <template>
   <div class="article-container">
-    <!-- <MdEditor /> -->
     <div class="article-text">文章编辑</div>
-    <mavon-editor
-      v-model="value"
-      class="mavon-editor"
-      @save="save"
-      @change="change"
-    />
-    <div class="function-area">
-      <el-button>保存</el-button>
-      <el-button type="primary">发布</el-button>
-    </div>
-
-    <!-- <div class="article-text">预览</div>
-        <div class="markdown-body" v-html="render"></div> -->
 
     <div class="article-text">标题</div>
     <el-input
@@ -40,7 +26,7 @@
         {{TagAdded}}
     </el-tag>
 
-    <!-- 这是用来新增的tag的输入框 -->
+    <!-- 这是用来新增tag的输入框 -->
     <el-input
         class="input-new-tag"
         v-if="inputVisible"
@@ -62,6 +48,9 @@
         +新增标签
     </el-button>
 
+    <MdEditor />
+    <!-- <div class="article-text">预览</div>
+        <div class="markdown-body" v-html="render"></div> -->
   </div>
 </template>
 
@@ -78,6 +67,8 @@ import store from '@/store'
 import { GetContent } from '@/api/article'
 // 引入GetArticles api，获取文章标题、封面等
 import { GetArticles } from '@/api/article'
+// 引入保存article的接口
+import { uploadArticle } from '@/api/article'
 
 export default {
     components: {
@@ -87,8 +78,6 @@ export default {
     },
     data() {
         return {
-            value: '', // mavon-editor的原内容
-            render: '', // mavon-editor渲染后的内容
             title: '', // 文章的标题
             inputVisible: false, // 文章标签
             inputValue: '', // 文章标签
@@ -97,15 +86,6 @@ export default {
         }
     },
     methods: {
-        // mavon-editor 点击保存按钮
-        save(value, render) {
-            alert('save')
-        },
-        // mavon-editor 修改后触发
-        change(value, render) {
-            this.render = render
-        },
-
         // 只有新增的标签是closable的，点击close后调用的函数
         handleClose() {
             // 清空store仓库的状态，即清除点击已有tag后保存到仓库里的状态
@@ -187,8 +167,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// 引入mavon-editor的样式，对应的css标签是class="markdown-body"
-@import '../../../../node_modules/mavon-editor/dist/css/index.css';
 .article-container {
     margin: 30px;
 
