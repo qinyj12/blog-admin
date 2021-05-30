@@ -108,7 +108,10 @@ export default {
             default: ''
         },
         // 确定给数据库的哪条记录做修改
-        TargetId: String
+        TargetId: {
+            type: String,
+            default: ''
+        }
     },
     watch: {
         // 由于imageCutOutside定义在prop中，只能从外部单向改变，不能从子组件内部改变
@@ -151,11 +154,16 @@ export default {
         },
         // 上传到服务器
         uploadHeadUrl_c(file) {
+            console.log('调用上传服务器')
+            console.log('targetid是')
+            console.log(this.TargetId)
             const formData = new FormData()
             // 上传剪切后的图像
-            formData.append('avatar', file) // 用avatar来确定修改成什么头像/封面（及剪切后的图像）
+            formData.append('img', file) // 用img来确定修改成什么头像/封面（及剪切后的图像）
             formData.append('id', this.TargetId) // 用id来确定给数据库的哪条记录做修改
             // UploadFunc定义的api是在父组件中定义的
+            console.log('cropper组件接受到的uploadfunc是')
+            console.log(this.UploadFunc)
             this.UploadFunc(formData).then(response => {
                 console.log(response)
                 // 更新token

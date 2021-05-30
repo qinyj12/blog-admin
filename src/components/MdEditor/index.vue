@@ -1,19 +1,12 @@
 <template>
     <div class="editor-container">
         <div id="vditor"></div>
-        <div class="button-area">
-            <el-button>保存</el-button>
-            <el-button type="primary" @click="demofunc">发布</el-button>
-        </div>
-        <div class="test-result" v-html="demovalue"></div>
     </div>
 </template>
 <script>
 import Vditor from "vditor";
 import "vditor/dist/index.css";
 import { uploadIllustrationUrl } from '@/api/article'
-// 引入保存article的接口
-import { uploadArticle } from '@/api/article'
 
 require('../../api/lute')
 export default {
@@ -24,18 +17,6 @@ export default {
         };
     },
     methods: {
-        demofunc() {
-            const formData = new FormData()
-            formData.append('title', '123')
-
-            // 此处没有写完，要和后端的接口对应起来，后端的接口是错的
-
-
-            // formData.append('file', )
-            // await uploadArticle(formdata)
-            // console.log(this.demovalue)
-            // console.log(this.contentEditor.getValue())
-        },
         onMarkdown(it) {
             let lute = Lute.New();
             const result = lute.MarkdownStr("", it);
@@ -110,7 +91,7 @@ export default {
                 accept: 'image/*,.mp3, .wav, .rar', 
                 token: 'test', // 头为 X-Upload-Token
                 max: 5 * 1024 * 1024,
-                url: Url(), // 上传的url接口
+                url: uploadIllustrationUrl, // 上传的url接口
                 multiple: false, // 是否上传多个文件
                 fieldName: 'illustration', // formdata里面的字段名称
                 // linkToImgUrl: 'https://sm.ms/api/upload',

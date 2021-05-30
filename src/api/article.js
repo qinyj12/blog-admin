@@ -30,6 +30,24 @@ export function uploadArticle(formdata) {
     })
 }
 
+export function addCover(formdata) {
+    return request({
+        url: 'http://127.0.0.1:5000/cover/',
+        method: 'put',
+        headers: {'Content-Type': 'multipart/form-data'},
+        data: formdata
+    })
+}
+
+export function editorCover(formdata) {
+    return request({
+        url: 'http://127.0.0.1:5000/cover/',
+        method: 'post',
+        headers: {'Content-Type': 'multipart/form-data'},
+        data: formdata
+    })
+}
+
 export function GetArticles(params) {
     return new Promise((resolve) => {
         resolve(

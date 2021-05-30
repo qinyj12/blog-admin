@@ -1,6 +1,6 @@
 <template>
   <div class="article-container">
-    <div class="article-text">文章编辑</div>
+    <!-- <div class="article-text">文章编辑</div> -->
 
     <div class="article-text">标题</div>
     <el-input
@@ -10,7 +10,12 @@
     />
 
     <div class="article-text">封面</div>
-    <ImageCropper :CropWidth="'360px'" :CropHeight="'180px'" />
+    <ImageCropper 
+        :CropWidth="'360px'" 
+        :CropHeight="'180px'" 
+        :UploadFunc="uploadCoverAPI()"
+        :TargetId="currentArticleId"
+    />
 
     <div class="article-text">标签</div>
     <TagExist />
@@ -48,9 +53,14 @@
         +新增标签
     </el-button>
 
-    <MdEditor />
-    <!-- <div class="article-text">预览</div>
-        <div class="markdown-body" v-html="render"></div> -->
+    <div class="article-text">内容</div>
+    <MdEditor ref="mdEditor" />
+
+    <div class="button-area">
+        <el-button>保存</el-button>
+        <el-button type="primary" @click="demofunc">发布</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -69,6 +79,8 @@ import { GetContent } from '@/api/article'
 import { GetArticles } from '@/api/article'
 // 引入保存article的接口
 import { uploadArticle } from '@/api/article'
+// 引入为新文章创建cover 的接口，或者为老文章修改cover的接口
+import { addCover, editCover } from '@/api/article'
 
 export default {
     components: {
@@ -82,10 +94,30 @@ export default {
             inputVisible: false, // 文章标签
             inputValue: '', // 文章标签
             TagAdded: '', // 文章标签
-            currentArticleDetail:{} // 当前要编辑的文章详情（标题、正文、tag、cover）
+            currentArticleDetail: {}, // 当前要编辑的文章详情（标题、正文、tag、cover）
+            currentArticleId: '' // 当前文章的id，只有当修改旧文章时，才有有id
         }
     },
     methods: {
+        // 判断当前页面是新增新文章，还是修改老文章。如果是修改老文章，则返回文章id
+        ArticleState() {
+            // 从url中拿到articleId，判断是否是新建文章
+            let ArticleIdInUrl = this.$route.params.ArticleId
+            // 如果articleId不是数字
+            let _ = parseFloat(ArticleIdInUrl).toString()
+            if (_ == 'NaN') {
+                if (ArticleIdInUrl == 'new') {
+                    return 'new'
+                } else {
+                    this.$router.push('/404')
+                }
+            // 如果articleId是数字
+            } else {
+                this.currentArticleId = ArticleIdInUrl
+                return this.currentArticleId
+            }
+        },
+
         // 只有新增的标签是closable的，点击close后调用的函数
         handleClose() {
             // 清空store仓库的状态，即清除点击已有tag后保存到仓库里的状态
@@ -137,6 +169,36 @@ export default {
                     this.currentArticleDetail.tag = TargetArticle.tag
                     this.currentArticleDetail.cover = TargetArticle.cover
                 })
+            }
+        },
+        demofunc() {
+            console.log(this.$refs.mdEditor.contentEditor.getValue())
+            // 下一步，改造cover的传参，应该在FileStorage里面，而不是普通的键值对
+            // const formData = new FormData()
+            // formData.append('user_id', '0')
+            // formData.append('article_title', '123')
+            // formData.append('article_cover', 'cover.jpg')
+            // formData.append('article_tag', 'tag')
+            // formData.append('article_state', 'state')
+            // formData.append('article_md', this.contentEditor.getValue())
+            
+            // this.uploadArticleFunc(formData)
+        },
+        // 引入外部api，做一个新增文章的函数
+        uploadArticleFunc(data) {
+            uploadArticle(data).then(resp => console.log(resp))
+        },
+        // 上传文章cover的函数，根据情况判断是修改当前文章cover，还是为新增文章创建cover
+        uploadCoverAPI() {
+            console.log('调用uploadCoverAPI')
+            // 如果是新建文章，调用addCover接口
+            if (this.ArticleState() == 'new') {
+                console.log('判断为编辑新文章')
+                return addCover
+            // 如果是修改老文章，调用editCover接口
+            } else {
+                console.log('判断为修改老文章')
+                return editCover
             }
         }
     },
@@ -203,6 +265,12 @@ export default {
         width: 90px;
         margin-left: 10px;
         vertical-align: bottom;
+    }
+
+    .button-area {
+        padding: 10px 0;
+        display: flex;
+        justify-content: flex-end;
     }
 
 }
