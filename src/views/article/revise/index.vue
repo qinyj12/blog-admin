@@ -15,6 +15,7 @@
         :CropHeight="'180px'" 
         :UploadFunc="uploadCoverAPI()"
         :TargetId="currentArticleId"
+        @getImgUrl="getCoverUrl"
     />
 
     <div class="article-text">标签</div>
@@ -95,7 +96,8 @@ export default {
             inputValue: '', // 文章标签
             TagAdded: '', // 文章标签
             currentArticleDetail: {}, // 当前要编辑的文章详情（标题、正文、tag、cover）
-            currentArticleId: '' // 当前文章的id，只有当修改旧文章时，才有有id
+            currentArticleId: '', // 当前文章的id，只有当修改旧文章时，才有有id
+            coverUrl: '', // 文章封面的url，这个值是子组件imageCropper传来的
         }
     },
     methods: {
@@ -200,6 +202,10 @@ export default {
                 console.log('判断为修改老文章')
                 return editCover
             }
+        },
+        // 用于从子组件cropper拿到cover url
+        getCoverUrl(url) {
+            this.coverUrl = url
         }
     },
     computed: {

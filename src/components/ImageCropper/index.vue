@@ -84,7 +84,8 @@ export default {
             // vue2.0中props只能从外向内单向改变，子组件内部无法改变，所以用额外的变量来储存props的值
             imageCutInside: '',
             imageCutForAPI: '', // 已经剪裁好的图片，用于传送到后端
-            HideUpdateIco: true // 隐藏确认上传的按钮
+            HideUpdateIco: true, // 隐藏确认上传的按钮
+            ImgUrlReturned: '' // 传送img到后端保存后，后端返回的img的url
         }
     },
     // 这是截图框的宽高，从父元素传值。
@@ -159,13 +160,16 @@ export default {
             console.log(this.TargetId)
             const formData = new FormData()
             // 上传剪切后的图像
-            formData.append('img', file) // 用img来确定修改成什么头像/封面（及剪切后的图像）
+            formData.append('img', file, 'img.png') // 用img来确定修改成什么头像/封面（及剪切后的图像）
+            // 加入'img.png'参数，完全是为了欺骗flask-uploads库，因为如果不加的话，flask-uploads库会默认前端传来的blob格式的图片保存名字为'blob'，没有后缀，这是不科学的，所以flask-uploads无法通过
             formData.append('id', this.TargetId) // 用id来确定给数据库的哪条记录做修改
             // UploadFunc定义的api是在父组件中定义的
             console.log('cropper组件接受到的uploadfunc是')
             console.log(this.UploadFunc)
             this.UploadFunc(formData).then(response => {
-                console.log(response)
+                // 把后端返回的img url赋值给imgUrlReturned，然后传送到父组件
+                this.ImgUrlReturned = response.data
+                this.SendImgUrlToParent(this.ImgUrlReturned)
                 // 更新token
                 this.$store.dispatch('user/updateToken')
             })
@@ -189,6 +193,10 @@ export default {
             // 清除imageCut
             // this.imageCutInside = ''
         },
+        // 把img url传参给父组件
+        SendImgUrlToParent(data) {
+            this.$emit('getImgUrl', data)
+        }
     },
     mounted() {
         // 动态设置cropper的宽和高
