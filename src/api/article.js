@@ -23,7 +23,7 @@ export function uploadIllustrationUrl() {
 
 export function uploadArticle(formdata) {
     return request({
-        url: 'http://127.0.0.1:5000/article/save/',
+        url: 'http://127.0.0.1:5000/article/saveall/',
         method: 'put',
         headers: {'Content-Type': 'multipart/form-data'},
         data: formdata
@@ -45,6 +45,14 @@ export function editorCover(formdata) {
         method: 'post',
         headers: {'Content-Type': 'multipart/form-data'},
         data: formdata
+    })
+}
+
+export function getTags(max_num) {
+    return request({
+        url: 'http://127.0.0.1:5000/article/tag/',
+        methods: 'get',
+        params: { max_num }
     })
 }
 

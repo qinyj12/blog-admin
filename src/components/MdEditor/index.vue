@@ -91,7 +91,7 @@ export default {
                 accept: 'image/*,.mp3, .wav, .rar', 
                 token: 'test', // 头为 X-Upload-Token
                 max: 5 * 1024 * 1024,
-                url: uploadIllustrationUrl, // 上传的url接口
+                url: uploadIllustrationUrl(), // 上传的url接口
                 multiple: false, // 是否上传多个文件
                 fieldName: 'illustration', // formdata里面的字段名称
                 // linkToImgUrl: 'https://sm.ms/api/upload',

@@ -66,6 +66,8 @@
 </template>
 
 <script>
+// 用vuex的mapgetters方法，拿到从getters.js中暴露出来的参数
+import { mapGetters } from 'vuex'
 // 引入md编辑器vditor
 import MdEditor from '@/components/MdEditor/index'
 // 引入用el-upload和vue-cropper封装的图片裁剪上传组件
@@ -82,6 +84,7 @@ import { GetArticles } from '@/api/article'
 import { uploadArticle } from '@/api/article'
 // 引入为新文章创建cover 的接口，或者为老文章修改cover的接口
 import { addCover, editCover } from '@/api/article'
+
 
 export default {
     components: {
@@ -174,17 +177,26 @@ export default {
             }
         },
         demofunc() {
-            console.log(this.$refs.mdEditor.contentEditor.getValue())
-            // 下一步，改造cover的传参，应该在FileStorage里面，而不是普通的键值对
-            // const formData = new FormData()
-            // formData.append('user_id', '0')
-            // formData.append('article_title', '123')
-            // formData.append('article_cover', 'cover.jpg')
-            // formData.append('article_tag', 'tag')
-            // formData.append('article_state', 'state')
-            // formData.append('article_md', this.contentEditor.getValue())
-            
-            // this.uploadArticleFunc(formData)
+            // 检测完整性要重写，不能漏掉 usid=0
+            // 上传成功后，跳转到article manage页。
+            // 只写了发布按钮，还没写保存按钮。
+            if (this.title && this.coverUrl && this.TagAdded && this.$refs.mdEditor.contentEditor.getValue()) {
+                const formData = new FormData()
+                formData.append('user_id', this.usid)
+                formData.append('article_title', this.title)
+                formData.append('article_cover', this.coverUrl)
+                formData.append('article_tag', this.TagAdded)
+                formData.append('article_state', 'published')
+                formData.append('article_md', this.$refs.mdEditor.contentEditor.getValue())
+                this.uploadArticleFunc(formData)
+            // 如果检测不完整，要重写
+            } else {
+                alert('不完整')
+                alert(this.usid)
+                alert(this.title)
+                alert(this.coverUrl)
+                alert(this.TagAdded)
+            }
         },
         // 引入外部api，做一个新增文章的函数
         uploadArticleFunc(data) {
@@ -212,7 +224,11 @@ export default {
         // tagChosenInStore == 保存在store仓库里的tag值
         TagChosenInStore() {
             return store.getters.TagsChoosen
-        }
+        },
+        // 用vuex的mapgetters方法，拿到从getters.js中暴露出来的参数
+        ...mapGetters([
+            'usid' // 拿到保存在vuex中的user_id
+        ])
     },
     watch: {
         // tagChosenInStore（保存在store仓库里的tag值）变化后，把值赋给本地参数tagAdded，因为不能直接监控store仓库
