@@ -13,7 +13,7 @@
     <ImageCropper 
         :CropWidth="'360px'" 
         :CropHeight="'180px'" 
-        :UploadFunc="uploadCoverAPI()"
+        :UploadFunc="uploadCoverAPI"
         :TargetId="currentArticleId"
         @getImgUrl="getCoverUrl"
     />
@@ -59,7 +59,7 @@
 
     <div class="button-area">
         <el-button>保存</el-button>
-        <el-button type="primary" @click="demofunc">发布</el-button>
+        <el-button type="primary" @click="PublishFunc">发布</el-button>
     </div>
 
   </div>
@@ -176,11 +176,11 @@ export default {
                 })
             }
         },
-        demofunc() {
-            // 检测完整性要重写，不能漏掉 usid=0
+        PublishFunc() {
             // 上传成功后，跳转到article manage页。
             // 只写了发布按钮，还没写保存按钮。
-            if (this.title && this.coverUrl && this.TagAdded && this.$refs.mdEditor.contentEditor.getValue()) {
+            // 保证各项值都上传了（因为usid有可能=0，所以用严格相等的形式来单独判断null和''的情况）
+            if (this.usid !== null && this.usid !== '' && this.title && this.coverUrl && this.TagAdded && this.$refs.mdEditor.contentEditor.getValue()) {
                 const formData = new FormData()
                 formData.append('user_id', this.usid)
                 formData.append('article_title', this.title)
@@ -191,11 +191,11 @@ export default {
                 this.uploadArticleFunc(formData)
             // 如果检测不完整，要重写
             } else {
-                alert('不完整')
-                alert(this.usid)
-                alert(this.title)
-                alert(this.coverUrl)
-                alert(this.TagAdded)
+                console.log('不完整')
+                console.log(this.usid)
+                console.log(this.title)
+                console.log(this.coverUrl)
+                console.log(this.TagAdded)
             }
         },
         // 引入外部api，做一个新增文章的函数
@@ -203,16 +203,16 @@ export default {
             uploadArticle(data).then(resp => console.log(resp))
         },
         // 上传文章cover的函数，根据情况判断是修改当前文章cover，还是为新增文章创建cover
-        uploadCoverAPI() {
+        uploadCoverAPI(formdata) {
             console.log('调用uploadCoverAPI')
             // 如果是新建文章，调用addCover接口
             if (this.ArticleState() == 'new') {
                 console.log('判断为编辑新文章')
-                return addCover
+                return addCover(formdata)
             // 如果是修改老文章，调用editCover接口
             } else {
                 console.log('判断为修改老文章')
-                return editCover
+                return editCover(formdata)
             }
         },
         // 用于从子组件cropper拿到cover url

@@ -46,7 +46,7 @@
         </el-dialog>
 
         <div>
-            <el-button @click="ConfirmImage" :disabled="HideUpdateIco">确认上传</el-button>
+            <el-button @click="ConfirmImage" :disabled="HideUpdateIco" class="confirm-button">确认上传</el-button>
         </div>
     </div>
 </template>
@@ -178,8 +178,8 @@ export default {
         },
         // 调整剪切框、剪切后的图片等元素的大小
         CropperSize(size) {
-            document.querySelector('.el-upload-dragger').style.setProperty('--CropWidth', size.width)
-            document.querySelector('.el-upload-dragger').style.setProperty('--CropHeight', size.height)
+            document.querySelector('.image-cropper-container').style.setProperty('--CropWidth', size.width)
+            document.querySelector('.image-cropper-container').style.setProperty('--CropHeight', size.height)
         },
         // 确认上传裁剪后的图片
         ConfirmImage() {
@@ -212,10 +212,15 @@ export default {
 $CropWidth: var(--CropWidth);
 $CropHeight: var(--CropHeight);
 
+.image-cropper-container {
+    width: $CropWidth;
+}
+
 // 这是头像修改框
 .el-upload-dragger {
     width: $CropWidth;
     height: $CropHeight;
+    box-sizing: border-box;
 }
 
 // 这是选择要剪切的图片后，跳出来的选择框里图片的大小
@@ -228,6 +233,14 @@ $CropHeight: var(--CropHeight);
 .image-cut {
     width: $CropWidth;
     height: $CropHeight;
+}
+
+// 实现相对父元素居右
+.confirm-button {
+    display:flex;
+    flex:1;
+    margin-left:auto;
+    margin-top: 10px;
 }
 
 // 这是图标和文字
