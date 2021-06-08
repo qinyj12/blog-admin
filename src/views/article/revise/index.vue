@@ -176,11 +176,46 @@ export default {
                 })
             }
         },
+        // 在上传之前保证各项参数的合法性
+        EnsureLegitimacy() {
+            // 判断usid正不正常
+            if (this.usid !== null && this.usid !== '') {
+                // 判断 title是否合法（不为空，不含空格，长度大于等于6）
+                if (this.title && this.title.indexOf(' ') == -1 && this.title.length >= 6) {
+                    // 判断coverUrl是否为空
+                    if (this.coverUrl) {
+                        // 判断tag是否合法（不为空，不含空）
+                        if (this.TagAdded && this.TagAdded.indexOf(' ') == -1) {
+                            // 判断文章内容是否为空
+                            if (this.$refs.mdEditor.contentEditor.getValue().length >= 100) {
+                                return true
+                            } else {
+                                this.$message.error('文章内容不得少于100个字符')
+                                return false
+                            }
+                        } else {
+                            this.$message.error('文章标签不合法')
+                            return false
+                        }
+                    } else {
+                        this.$message.error('文章封面为空')
+                        return false
+                    }
+                } else {
+                    this.$message.error('文章标题不合法')
+                    return false
+                }
+            } else {
+                this.$message.error('用户信息错误')
+                return false
+            }
+        },
         PublishFunc() {
             // 上传成功后，跳转到article manage页。
             // 只写了发布按钮，还没写保存按钮。
-            // 保证各项值都上传了（因为usid有可能=0，所以用严格相等的形式来单独判断null和''的情况）
-            if (this.usid !== null && this.usid !== '' && this.title && this.coverUrl && this.TagAdded && this.$refs.mdEditor.contentEditor.getValue()) {
+
+            // 如果通过参数合法性判断
+            if (this.EnsureLegitimacy()) {
                 const formData = new FormData()
                 formData.append('user_id', this.usid)
                 formData.append('article_title', this.title)
@@ -189,18 +224,21 @@ export default {
                 formData.append('article_state', 'published')
                 formData.append('article_md', this.$refs.mdEditor.contentEditor.getValue())
                 this.uploadArticleFunc(formData)
-            // 如果检测不完整，要重写
             } else {
-                console.log('不完整')
-                console.log(this.usid)
-                console.log(this.title)
-                console.log(this.coverUrl)
-                console.log(this.TagAdded)
+                
             }
         },
         // 引入外部api，做一个新增文章的函数
         uploadArticleFunc(data) {
-            uploadArticle(data).then(resp => console.log(resp))
+            uploadArticle(data).then(resp => {
+                console.log(resp)
+                this.$message({
+                    message: '文章上传成功！',
+                    type: 'success'
+                })
+                // 上传成功后，跳转xx
+                // 首先要判断是否上传成功
+            })
         },
         // 上传文章cover的函数，根据情况判断是修改当前文章cover，还是为新增文章创建cover
         uploadCoverAPI(formdata) {

@@ -45,7 +45,8 @@
             </div>
         </el-dialog>
 
-        <div>
+        <div class="function-area">
+            <span class="upload-result" :style="{'color': UploadResult == '上传成功！'? 'green' : 'red'}">{{UploadResult}}</span>
             <el-button @click="ConfirmImage" :disabled="HideUpdateIco" class="confirm-button">确认上传</el-button>
         </div>
     </div>
@@ -85,7 +86,8 @@ export default {
             imageCutInside: '',
             imageCutForAPI: '', // 已经剪裁好的图片，用于传送到后端
             HideUpdateIco: true, // 隐藏确认上传的按钮
-            ImgUrlReturned: '' // 传送img到后端保存后，后端返回的img的url
+            ImgUrlReturned: '', // 传送img到后端保存后，后端返回的img的url
+            UploadResult: '尚未上传' // 判断上传成功没有
         }
     },
     // 这是截图框的宽高，从父元素传值。
@@ -175,6 +177,8 @@ export default {
             })
             // 释放内存
             window.URL.revokeObjectURL(file)
+            // 前端提示上传成功
+            this.UploadResult = '上传成功！'
         },
         // 调整剪切框、剪切后的图片等元素的大小
         CropperSize(size) {
@@ -235,13 +239,29 @@ $CropHeight: var(--CropHeight);
     height: $CropHeight;
 }
 
-// 实现相对父元素居右
-.confirm-button {
-    display:flex;
-    flex:1;
-    margin-left:auto;
-    margin-top: 10px;
+.function-area {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    justify-content: space-between;
+
+    .upload-result {
+        display: inline-block;
+        height: 100%;
+        line-height: 40px;
+        font-size: small;
+    }
+
+    // 实现相对父元素居右
+    .confirm-button {
+        height: 100%;
+        // display:flex;
+        // flex:1;
+        // margin-left:auto;
+        // margin-top: 10px;
+    }
 }
+
 
 // 这是图标和文字
 .el-upload-icon-text {
