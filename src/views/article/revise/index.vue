@@ -58,7 +58,7 @@
     <MdEditor ref="mdEditor" />
 
     <div class="button-area">
-        <el-button>保存</el-button>
+        <el-button @click="SaveFunc">保存</el-button>
         <el-button type="primary" @click="PublishFunc">发布</el-button>
     </div>
 
@@ -187,35 +187,37 @@ export default {
                         // 判断tag是否合法（不为空，不含空）
                         if (this.TagAdded && this.TagAdded.indexOf(' ') == -1) {
                             // 判断文章内容是否为空
-                            if (this.$refs.mdEditor.contentEditor.getValue().length >= 100) {
-                                return true
+                            if (this.$refs.mdEditor.contentEditor.getValue().length >= 10) {
+                                return {result: true}
                             } else {
-                                this.$message.error('文章内容不得少于100个字符')
-                                return false
+                                return {result: false, message:'文章内容不得少于100个字符'}
                             }
                         } else {
-                            this.$message.error('文章标签不合法')
-                            return false
+                            return {result: false, message:'文章标签不合法'}
                         }
                     } else {
-                        this.$message.error('文章封面为空')
-                        return false
+                        return {result: false, message:'文章封面为空'}
                     }
                 } else {
-                    this.$message.error('文章标题不合法')
-                    return false
+                    return {result: false, message:'文章标题不合法'}
                 }
             } else {
-                this.$message.error('用户信息错误')
-                return false
+                return {result: false, message:'用户信息错误'}
             }
+        },
+        // 延迟跳转文章发布页的函数
+        JumpToArticlesManagementPage(time) {
+            setTimeout(() => {
+                this.$router.push('/articles/index')
+            }, time);
         },
         PublishFunc() {
             // 上传成功后，跳转到article manage页。
             // 只写了发布按钮，还没写保存按钮。
 
             // 如果通过参数合法性判断
-            if (this.EnsureLegitimacy()) {
+            const result = this.EnsureLegitimacy()
+            if (result.result) {
                 const formData = new FormData()
                 formData.append('user_id', this.usid)
                 formData.append('article_title', this.title)
@@ -223,18 +225,25 @@ export default {
                 formData.append('article_tag', this.TagAdded)
                 formData.append('article_state', 'published')
                 formData.append('article_md', this.$refs.mdEditor.contentEditor.getValue())
-                this.uploadArticleFunc(formData)
+                this.uploadArticleFunc(formData, 2000)
+                this.JumpToArticlesManagementPage(2000)
             } else {
-                
+                this.$message.error(result.message)
             }
         },
+        // 保存文章的方法
+        SaveFunc() {
+            this.JumpToArticlesManagementPage(1000)
+        },
         // 引入外部api，做一个新增文章的函数
-        uploadArticleFunc(data) {
+        uploadArticleFunc(data, time) {
             uploadArticle(data).then(resp => {
                 console.log(resp)
                 this.$message({
-                    message: '文章上传成功！',
-                    type: 'success'
+                    message: '文章上传成功！将于' + time/1000 + '秒后跳转文章管理页',
+                    type: 'success',
+                    duration: time
+
                 })
                 // 上传成功后，跳转xx
                 // 首先要判断是否上传成功

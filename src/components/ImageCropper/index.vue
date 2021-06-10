@@ -46,7 +46,6 @@
         </el-dialog>
 
         <div class="function-area">
-            <span class="upload-result" :style="{'color': UploadResult == '上传成功！'? 'green' : 'red'}">{{UploadResult}}</span>
             <el-button @click="ConfirmImage" :disabled="HideUpdateIco" class="confirm-button">确认上传</el-button>
         </div>
     </div>
@@ -240,25 +239,22 @@ $CropHeight: var(--CropHeight);
 }
 
 .function-area {
-    display: flex;
+    margin-top: 10px;
+    // border: 1px solid;
+    // display: flex;
     width: 100%;
     height: 40px;
-    justify-content: space-between;
-
-    .upload-result {
-        display: inline-block;
-        height: 100%;
-        line-height: 40px;
-        font-size: small;
-    }
+    // justify-content: space-between;
+    // flex-direction: column;
 
     // 实现相对父元素居右
     .confirm-button {
+        // width: 40px;
+        box-sizing: border-box;
         height: 100%;
-        // display:flex;
-        // flex:1;
-        // margin-left:auto;
-        // margin-top: 10px;
+        display:flex;
+        flex:1;
+        margin-left:auto;
     }
 }
 

@@ -157,6 +157,7 @@ export default {
             .table-cover-img {
                 width: 95%;
                 margin: 0;
+                border-radius: 5px;
             }
         }
     }
