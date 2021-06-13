@@ -63,3 +63,11 @@ export function GetArticles(articleId) {
         params: {articleId}
     })
 }
+
+export function GetArticleById(article_id, if_need_content) {
+    return request({
+        url: 'http://127.0.0.1:5000/article/id/',
+        methods: 'get',
+        params: {article_id, if_need_content}
+    })
+}

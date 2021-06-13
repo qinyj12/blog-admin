@@ -76,10 +76,8 @@ import ImageCropper from '@/components/ImageCropper/index'
 import TagExist from '@/components/TagExist/index'
 // 引入store
 import store from '@/store'
-// 引入GetContent api，获取正文
-import { GetContent } from '@/api/article'
-// 引入GetArticles api，获取文章标题、封面等
-import { GetArticles } from '@/api/article'
+// 引入GetArticleById api，获取文章信息
+import { GetArticleById } from '@/api/article'
 // 引入保存article的接口
 import { uploadArticle } from '@/api/article'
 // 引入为新文章创建cover 的接口，或者为老文章修改cover的接口
@@ -101,6 +99,7 @@ export default {
             currentArticleDetail: {}, // 当前要编辑的文章详情（标题、正文、tag、cover）
             currentArticleId: '', // 当前文章的id，只有当修改旧文章时，才有有id
             coverUrl: '', // 文章封面的url，这个值是子组件imageCropper传来的
+            content: ''
         }
     },
     methods: {
@@ -162,17 +161,17 @@ export default {
                 }
             // 如果articleId是数字
             } else {
-                // 通过getcontent api，获取文章的正文，并赋值给currentArticleDetail
-                await GetContent(articleId).then(res => {
-                    this.currentArticleDetail.content = res
-                })
+                // 通过GetArticleById api，获取文章信息（用第二个参数true判断是否需要正文）
+                await GetArticleById(articleId, true).then(res => {
+                    // console.log(res)
+                    // 然后把各个值赋值给对应的字段
+                    const {data} = res
+                    this.title = data.title
+                    this.coverUrl = data.cover
+                    this.TagAdded = data.tag
+                    this.content = data.content
 
-                // 通过getarticle api，获取文章的标题、标签、cover，并赋值给currentArticleDetail
-                await GetArticles().then(res => {
-                    let TargetArticle = res.find(_ => {return _.id == articleId})
-                    this.currentArticleDetail.title = TargetArticle.title
-                    this.currentArticleDetail.tag = TargetArticle.tag
-                    this.currentArticleDetail.cover = TargetArticle.cover
+                    // 还没设置编辑文章的上传函数
                 })
             }
         },
@@ -180,8 +179,8 @@ export default {
         EnsureLegitimacy() {
             // 判断usid正不正常
             if (this.usid !== null && this.usid !== '') {
-                // 判断 title是否合法（不为空，不含空格，长度大于等于6）
-                if (this.title && this.title.indexOf(' ') == -1 && this.title.length >= 6) {
+                // 判断 title是否合法（不为空，长度大于等于6）
+                if (this.title && this.title.length >= 6) {
                     // 判断coverUrl是否为空
                     if (this.coverUrl) {
                         // 判断tag是否合法（不为空，不含空）
@@ -233,7 +232,8 @@ export default {
         },
         // 保存文章的方法
         SaveFunc() {
-            this.JumpToArticlesManagementPage(1000)
+            this.content = 'save'
+            // this.JumpToArticlesManagementPage(1000)
         },
         // 引入外部api，做一个新增文章的函数
         uploadArticleFunc(data, time) {
@@ -283,15 +283,15 @@ export default {
             this.TagAdded = store.getters.TagsChoosen
         }
     },
-    async mounted() {
+    async beforeMount() {
         // 获取当前要编辑的文章的详情，在函数内已经把详情赋值给currentArticleDetail了
         await this.getCurrentAritlceDetail(this.$route.params.ArticleId)
         // 把文章的title、content、tag分别赋值给对应的变量
-        this.value = this.currentArticleDetail.content
-        this.title = this.currentArticleDetail.title
-        this.TagAdded = this.currentArticleDetail.tag
-        // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
-        this.$store.dispatch('cropper/CropImage', this.currentArticleDetail.cover)
+        // this.value = this.currentArticleDetail.content
+        // this.title = this.currentArticleDetail.title
+        // this.TagAdded = this.currentArticleDetail.tag
+        // // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
+        // this.$store.dispatch('cropper/CropImage', this.currentArticleDetail.cover)
     },
 
 }

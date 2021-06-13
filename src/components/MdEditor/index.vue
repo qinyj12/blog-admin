@@ -13,8 +13,27 @@ export default {
     data() {
         return {
             contentEditor: '',
-            demovalue: ''
+            demovalue: '',
         };
+    },
+    props: {
+        contentValueFromFather: {
+            default: 'hello world!'
+        }
+    },
+    computed: {
+        // 判断前端传来的值，如果前端传来的是不是null，如果是null，代表前端无意修改content，而是要求采用子组件默认的content
+        contentValueInThisPage() {
+            // 如果父组件传过来有效值
+            if (this.contentValueFromFather) {
+                // 那就把这个值赋给contentValueFromFather
+                return this.contentValueFromFather
+            // 如果父组件没有传过来有效值
+            } else {
+                // 那就contentValueFromFather = hello world!
+                return 'hello world!'
+            }
+        }
     },
     methods: {
         onMarkdown(it) {
@@ -78,7 +97,7 @@ export default {
                     ]
                 }
             ],
-            value: 'hello, Vditor + Vue!',
+            value: this.contentValueInThisPage,
             cache: {
                 enable: false
             },
