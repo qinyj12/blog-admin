@@ -19,7 +19,7 @@
     />
 
     <div class="article-text">标签</div>
-    <TagExist />
+    <!-- <TagExist /> -->
 
     <!-- 这是新增后的tag -->
     <el-tag 
@@ -55,7 +55,7 @@
     </el-button>
 
     <div class="article-text">内容</div>
-    <MdEditor ref="mdEditor" />
+    <MdEditor ref="mdEditor" :contentValueFromFather="content" />
 
     <div class="button-area">
         <el-button @click="SaveFunc">保存</el-button>
@@ -283,9 +283,9 @@ export default {
             this.TagAdded = store.getters.TagsChoosen
         }
     },
-    async beforeMount() {
+    created() {
         // 获取当前要编辑的文章的详情，在函数内已经把详情赋值给currentArticleDetail了
-        await this.getCurrentAritlceDetail(this.$route.params.ArticleId)
+        this.getCurrentAritlceDetail(this.$route.params.ArticleId)
         // 把文章的title、content、tag分别赋值给对应的变量
         // this.value = this.currentArticleDetail.content
         // this.title = this.currentArticleDetail.title
