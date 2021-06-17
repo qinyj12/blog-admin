@@ -15,11 +15,12 @@
         :CropHeight="'180px'" 
         :UploadFunc="uploadCoverAPI"
         :TargetId="currentArticleId"
+        :imageCutOutside='coverUrl'
         @getImgUrl="getCoverUrl"
     />
 
     <div class="article-text">标签</div>
-    <!-- <TagExist /> -->
+    <TagExist />
 
     <!-- 这是新增后的tag -->
     <el-tag 
@@ -55,7 +56,7 @@
     </el-button>
 
     <div class="article-text">内容</div>
-    <MdEditor ref="mdEditor" :contentValueFromFather="content" />
+    <MdEditor ref="mdEditor" :setDefaultValue="fatherValue"/>
 
     <div class="button-area">
         <el-button @click="SaveFunc">保存</el-button>
@@ -99,10 +100,31 @@ export default {
             currentArticleDetail: {}, // 当前要编辑的文章详情（标题、正文、tag、cover）
             currentArticleId: '', // 当前文章的id，只有当修改旧文章时，才有有id
             coverUrl: '', // 文章封面的url，这个值是子组件imageCropper传来的
-            content: ''
+            content: '',  // 文章的正文
+            fatherValue: this.giveValueToMdEditor
         }
     },
     methods: {
+        async giveValueToMdEditor() {
+            /* getCurrentAritlceDetail函数是用来获取当前文章信息的，然后赋值给页面的各个值里。
+            之所以要写在giveValueToMdEditor函数里，是因为这个函数是作为prop传值给子组件vditor的，以此来定义vditor输入框的初始值。
+            如果把getCurrentAritlceDetail放在别的地方执行（比如mounted），那giveValueToMdEditor就来不及获取到文章信息，
+            也就无法把值传送给子组件vditor。 */ 
+            await this.getCurrentAritlceDetail(this.$route.params.ArticleId)
+            /* giveValueToMdEditor函数返回一个promise，这样才能在子组件vditor里等待promise执行完成、
+            也就是文章的各个信息都获取完毕后，再加载子组件vditor的其他元素。 */
+            return new Promise(resolve => {
+                resolve(
+                    {value: this.content}
+                )                    
+
+            })
+            // return new Promise(resolve => {
+            //     setTimeout(() => {
+            //         resolve(console.log('father done'))
+            //     }, 2000);
+            // })
+        },
         // 判断当前页面是新增新文章，还是修改老文章。如果是修改老文章，则返回文章id
         ArticleState() {
             // 从url中拿到articleId，判断是否是新建文章
@@ -163,7 +185,6 @@ export default {
             } else {
                 // 通过GetArticleById api，获取文章信息（用第二个参数true判断是否需要正文）
                 await GetArticleById(articleId, true).then(res => {
-                    // console.log(res)
                     // 然后把各个值赋值给对应的字段
                     const {data} = res
                     this.title = data.title
@@ -211,11 +232,11 @@ export default {
             }, time);
         },
         PublishFunc() {
-            // 上传成功后，跳转到article manage页。
-            // 只写了发布按钮，还没写保存按钮。
+            // 还要判断当前文章是修改还是新增
 
             // 如果通过参数合法性判断
             const result = this.EnsureLegitimacy()
+            // 以下为新增文章
             if (result.result) {
                 const formData = new FormData()
                 formData.append('user_id', this.usid)
@@ -232,7 +253,7 @@ export default {
         },
         // 保存文章的方法
         SaveFunc() {
-            this.content = 'save'
+            // this.content = 'save'
             // this.JumpToArticlesManagementPage(1000)
         },
         // 引入外部api，做一个新增文章的函数
@@ -262,7 +283,7 @@ export default {
                 return editCover(formdata)
             }
         },
-        // 用于从子组件cropper拿到cover url
+        // 用于从子组件cropper拿到cover url，也就是说 子=>父，非父=>子
         getCoverUrl(url) {
             this.coverUrl = url
         }
@@ -283,17 +304,6 @@ export default {
             this.TagAdded = store.getters.TagsChoosen
         }
     },
-    created() {
-        // 获取当前要编辑的文章的详情，在函数内已经把详情赋值给currentArticleDetail了
-        this.getCurrentAritlceDetail(this.$route.params.ArticleId)
-        // 把文章的title、content、tag分别赋值给对应的变量
-        // this.value = this.currentArticleDetail.content
-        // this.title = this.currentArticleDetail.title
-        // this.TagAdded = this.currentArticleDetail.tag
-        // // 因为图像模块imageCropper和文章编辑模块是不同的模块，所以通过vuex传值
-        // this.$store.dispatch('cropper/CropImage', this.currentArticleDetail.cover)
-    },
-
 }
 </script>
 

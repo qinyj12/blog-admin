@@ -15,42 +15,16 @@ export default {
         return {
             contentEditor: '',
             demovalue: '',
-            contentValueInThisPage: '子组件的默认值'
+            defaultValue: 'hello world!'
         };
     },
     props: {
-        contentValueFromFather: {
-            default: '前端传值的默认值'
-        }
-    },
-    watch: {
-        // 监控前端传来值的变化
-        contentValueFromFather(val) {
-            console.log('watch到变化')
-            // 如果前端没有传来有效值，即父组件无意修改子组件的content
-            if (!val) {
-                console.log(val)
-            // 否则的话，即父组件有意修改子组件的content
-            } else {
-                console.log(val)
-                this.contentValueInThisPage = val
+        setDefaultValue: {
+            type: Function,
+            default: function() {
+                return {value: this.defaultValue}
             }
         }
-
-        // 判断前端传来的值，如果前端传来的是不是null，如果是null，代表前端无意修改content，而是要求采用子组件默认的content
-        // contentValueInThisPage() {
-        //     console.log('监控调用')
-        //     console.log(this.contentValueFromFather)
-        //     // 如果父组件传过来有效值
-        //     if (this.contentValueFromFather) {
-        //         // 那就把这个值赋给contentValueFromFather
-        //         return this.contentValueFromFather
-        //     // 如果父组件没有传过来有效值
-        //     } else {
-        //         // 那就contentValueFromFather = hello world!
-        //         return 'hello world!'
-        //     }
-        // }
     },
     methods: {
         demo() {
@@ -118,7 +92,7 @@ export default {
                         ]
                     }
                 ],
-                value: that.contentValueInThisPage,
+                value: that.defaultValue,
                 cache: {
                     enable: false
                 },
@@ -152,11 +126,9 @@ export default {
         }
     },
     async mounted() {
-        this.contentValueInThisPage = 'change'
-        this.createVditor()
-        // console.log(this.contentValueFromFather)
-
-        
+        let getFatherValue = await this.setDefaultValue()
+        this.defaultValue = getFatherValue.value
+        this.createVditor()        
     },
     
 };
