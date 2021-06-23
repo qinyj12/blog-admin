@@ -101,7 +101,8 @@ export default {
             currentArticleId: '', // 当前文章的id，只有当修改旧文章时，才有有id
             coverUrl: '', // 文章封面的url，这个值是子组件imageCropper传来的
             content: '',  // 文章的正文
-            fatherValue: this.giveValueToMdEditor
+            fatherValue: this.giveValueToMdEditor,
+            editMode: '', // 判断当前文章是编辑还是新增
         }
     },
     methods: {
@@ -119,11 +120,6 @@ export default {
                 )                    
 
             })
-            // return new Promise(resolve => {
-            //     setTimeout(() => {
-            //         resolve(console.log('father done'))
-            //     }, 2000);
-            // })
         },
         // 判断当前页面是新增新文章，还是修改老文章。如果是修改老文章，则返回文章id
         ArticleState() {
@@ -133,12 +129,14 @@ export default {
             let _ = parseFloat(ArticleIdInUrl).toString()
             if (_ == 'NaN') {
                 if (ArticleIdInUrl == 'new') {
+                    this.editMode = 'new'
                     return 'new'
                 } else {
                     this.$router.push('/404')
                 }
             // 如果articleId是数字
             } else {
+                this.editMode = 'old'
                 this.currentArticleId = ArticleIdInUrl
                 return this.currentArticleId
             }
@@ -274,7 +272,7 @@ export default {
         uploadCoverAPI(formdata) {
             console.log('调用uploadCoverAPI')
             // 如果是新建文章，调用addCover接口
-            if (this.ArticleState() == 'new') {
+            if (this.editMode == 'new') {
                 console.log('判断为编辑新文章')
                 return addCover(formdata)
             // 如果是修改老文章，调用editCover接口
@@ -303,6 +301,9 @@ export default {
         TagChosenInStore() {
             this.TagAdded = store.getters.TagsChoosen
         }
+    },
+    mounted() {
+        this.ArticleState()
     },
 }
 </script>
